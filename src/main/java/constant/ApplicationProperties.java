@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 public class ApplicationProperties {
     public static String AUTHOR;
     public static String COMPANY;
+    public static int MAXTHREAD;
     private Properties appProperties;
     private static final String propertiesFile = "config.properties";
     final static Logger logger = Logger.getLogger("Properties");
@@ -28,6 +29,7 @@ public class ApplicationProperties {
                 appProperties.load(ins);
                 AUTHOR = appProperties.getProperty("author");
                 COMPANY = appProperties.getProperty("company");
+                MAXTHREAD = Integer.parseInt(appProperties.getProperty("maxthread"));
                 logger.log(Level.ALL,"This is configured : " + AUTHOR + COMPANY);
 
             } else {
