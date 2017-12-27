@@ -18,10 +18,14 @@ public class FinApp {
         //m.startSlave();
         //CustomTick.historic_data();
         try{
-            new StockAnalyser().backtest();
+            Master m = new Master();
+            m.startSlave();
+            //CustomTick.historic_data();
+            //new StockAnalyser().backtest();
 
-        }catch (InterruptedException e){
             //System.out.println("Exce",e);
+        }catch (Exception e){
+
         }
     }
 

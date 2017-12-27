@@ -32,7 +32,7 @@ public class CustomTick {
     CustomTick(){
 
     }
-
+    // Fcuntion to Generate Random Decimal Value
     private static Decimal randDecimal(Decimal min, Decimal max) {
         Decimal randomDecimal = null;
         if (min != null && max != null && min.isLessThan(max)) {
@@ -42,15 +42,19 @@ public class CustomTick {
     }
 
     public static Tick generateRandomTick() {
+        //Fetch The Time now
         ZonedDateTime endTime  = ZonedDateTime.now();
+        //Create First Tick
         Tick newTick  = new BaseTick(endTime, 105.42, 112.99, 104.01, 111.42, 1337);
         LAST_TICK_CLOSE_PRICE = newTick.getClosePrice();
+        //Random Increment Decrement Percentage
         final Decimal maxRange = Decimal.valueOf("0.05"); // 3.0%
         Decimal openPrice = LAST_TICK_CLOSE_PRICE;
         Decimal minPrice = openPrice.minus(openPrice.multipliedBy(maxRange.multipliedBy(Decimal.valueOf(Math.random()))));
         Decimal maxPrice = openPrice.plus(openPrice.multipliedBy(maxRange.multipliedBy(Decimal.valueOf(Math.random()))));
         Decimal closePrice = randDecimal(minPrice, maxPrice);
         LAST_TICK_CLOSE_PRICE = closePrice;
+        // Create Tick
         return new BaseTick(ZonedDateTime.now(), openPrice, maxPrice, minPrice, closePrice, Decimal.ONE);
     }
 
@@ -68,12 +72,13 @@ public class CustomTick {
                     .build();
 
             Response response = client.newCall(request).execute();
+            // Convert Response String into Tick Object
             String jsonString = response.body().string();
             JSONArray jsonArray = (JSONArray)parser.parse(jsonString);
-            //historic_ticks = new Tick[jsonArray.size()];
+            // Convert String date to ZonedDateTime
             NumberFormat format = NumberFormat.getInstance(Locale.US);
             for (int i =0 ; i <jsonArray.size(); i++){
-
+                //Create a Json Object
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 Decimal openPrice =  Decimal.valueOf(format.parse(jsonObject.get("Open Price").toString()).doubleValue());
                 Decimal closePrice =  Decimal.valueOf(format.parse(jsonObject.get("Close Price").toString()).doubleValue());
@@ -85,8 +90,8 @@ public class CustomTick {
                 historic_ticks.add(new BaseTick(time,openPrice, maxPrice, minPrice, closePrice,volume));
                 //System.out.println(jsonObject.get("Date"));
             }
-
-            System.out.print(jsonString);
+            // Print the Json Data Reveived
+            //System.out.print(jsonString);
         }catch (IOException iox){
             System.out.print("lll" + iox);
         }catch (java.text.ParseException px){

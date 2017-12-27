@@ -20,6 +20,7 @@ import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
 import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
 import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 
+
 import java.util.List;
 
 /**
@@ -97,10 +98,10 @@ public class StrategyOne implements StrategyBuilder {
         SMAIndicator sma = new SMAIndicator(closePrice, timeFrame);
         // Entry Rules
         Rule entrySignal1 = new OverIndicatorRule(sma,closePrice);
-        Rule entrySignal2 = new UnderIndicatorRule(rsi, Decimal.valueOf(35));
+        Rule entrySignal2 = new UnderIndicatorRule(rsi, Decimal.valueOf(45));
         // Exit Rules
         Rule exitSignal1 = new UnderIndicatorRule(sma, closePrice);
-        Rule exitSignal2 = new OverIndicatorRule(rsi, Decimal.valueOf(65));
+        Rule exitSignal2 = new OverIndicatorRule(rsi, Decimal.valueOf(55));
         //Create Strategy
         Strategy strategy = new BaseStrategy(entrySignal2,exitSignal2 );
         return strategy;

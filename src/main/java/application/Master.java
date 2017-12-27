@@ -1,105 +1,57 @@
 package application;
 
-import data.Proposal;
+import Strategies.StrategyAnalyser;
+import Strategies.StrategyBuilder;
+import Strategies.StrategyOne;
+import eu.verdelhan.ta4j.Strategy;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by nitigyas on 17/9/17.
  * https://github.com/team172011
  */
 public class Master {
+    // List of Stocks to Analyse
+    final  static String[] symbolList = new String[]{"TCS","ADANIPORTS","ASIANPAINT"};
+    // Methods start slaves for each stock
     public void startSlave(){
-        List<Future<Proposal>> futureList = new ArrayList<Future<Proposal>>();
-        List<Proposal> proposalList = new ArrayList<Proposal>();
+        List<Future<StrategyBuilder>> futureList = new ArrayList<Future<StrategyBuilder>>();
+        // Maximum thread to run at a time.
         ExecutorService executorPool = Executors.newFixedThreadPool(10);
 
-        for (int id =1; id<=10 ; id++){
-            Future<Proposal> future = executorPool.submit(new Slave(id));
+        // Create Slaves Threads
+        for (int id =0; id<symbolList.length ; id++){
+            Future<StrategyBuilder> future = executorPool.submit(new Slave(id));
             futureList.add(future);
 
         }
 
         executorPool.shutdown();
-
-        while (true){
-            try {
-                System.out.print("Till Now We Got Following Proposal : ");
-                for (int prp : Slave.proposalList) {
-                    System.out.print(prp + " , ");
-                }
-                System.out.println("");
-                Thread.sleep(1000);
-            }catch (Exception e){
-
-            }
+        // Wait for Threads to complete
+        // This code needs to be fixed
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        /*for(Future<Proposal> fut : futureList){
-            try{
-                Proposal p = fut.get();
-                System.out.println("Proposal recieve is : " + p.getI() + "");
-                proposalList.add(p);
-/*                System.out.print("Till Now We Got Following Proposal : ");
-                for ( int prp : Slave.proposalList ) {
-                    System.out.print(prp + " , ");
+        // Display Result of all calculations // This can be run in loop if slaves keep on changing there ouptut
+        for (int j = 0 ; j<symbolList.length ; j++){
+                System.out.println("Till Now We Got Following Proposal : ");
+                for (StrategyBuilder prp : Slave.proposalList) {
+                    //System.out.print(prp.getName() + " , ");
+                    new StrategyAnalyser().printAllResults((StrategyOne)prp);
                 }
                 System.out.println("");
 
-            }catch (Exception ex) {
-                System.out.print(ex.toString());
-            }
         }
-        Proposal bestProposal = compare(proposalList);*/
+
     }
-
-    private Proposal compare(List<Proposal> pli){
-        Proposal bestProposal = null;
-        int max = 0;
-        for(Proposal p : pli){
-            if (p.getI() > max){
-                max = p.getI();
-                bestProposal = p;
-            }
-        }
-        System.out.println("Best Proposal is : " + bestProposal.getI());
-        return bestProposal;
-    }
-
-
-    /*
-        public void startSlave(){
-        List<Future<Proposal>> futureList = new ArrayList<Future<Proposal>>();
-        List<Proposal> proposalList = new ArrayList<Proposal>();
-        ExecutorService executorPool = Executors.newFixedThreadPool(10);
-
-        for (int id =0; id<10 ; id++){
-            Future<Proposal> future = executorPool.submit(new Slave(id));
-            futureList.add(future);
-
-        }
-
-        executorPool.shutdown();
-
-
-
-        /*for(Future<Proposal> fut : futureList){
-            try{
-                Proposal p = fut.get();
-                System.out.println("Proposal recieve is : " + p.getI() + "");
-                proposalList.add(p);
-
-            }catch (Exception ex) {
-                System.out.print(ex.toString());
-            }
-        }
-        Proposal bestProposal = compare(proposalList);
-       }
-     */
-
 
 }

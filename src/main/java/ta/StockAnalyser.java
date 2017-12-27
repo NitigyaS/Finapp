@@ -58,10 +58,6 @@ public class StockAnalyser {
         SimpleLinearRegressionIndicator longlinear = new SimpleLinearRegressionIndicator(closePrice, tickLength);
         SimpleLinearRegressionIndicator shortlinear = new SimpleLinearRegressionIndicator(closePrice, timeFrame);
         RSIIndicator rsi = new RSIIndicator(closePrice,timeFrame);
-        //System.out.println("LongLinear " + longlinear.getValue(19).toDouble());
-        //System.out.println("ShortLinear " + shortlinear.getValue(19).toDouble());
-
-        System.out.println("ShortLinear " + rsi.getValue(timeFrame).toDouble());
 
         // Entry Rules
         Rule entrySignal1 = new CrossedDownIndicatorRule(rsi,Decimal.valueOf(50));
@@ -73,22 +69,6 @@ public class StockAnalyser {
         Strategy strategy = new BaseStrategy(entrySignal1,exitSignal2   );
         return strategy;
 
-        // Indicator
-/*        ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
-        SMAIndicator sma = new SMAIndicator(closePrice, 12);
-
-        // Entry Rules
-
-
-        // Exit Rules
-
-        Strategy buySellSignals = new BaseStrategy(
-                new OverIndicatorRule(sma, closePrice),
-                new UnderIndicatorRule(sma, closePrice)
-
-                //new StopGainRule(closePrice, tradingRecord.getLastEntry().getPrice().plus(Decimal.TWO) )
-        );
-        return buySellSignals;*/
     }
 
 
@@ -157,7 +137,7 @@ public class StockAnalyser {
 
     public void backtest() throws InterruptedException {
         // Get Historic Data
-        ticks = CustomTick.historic_data("tcs","12month");
+        ticks = CustomTick.historic_data("AXISBANK","12month");
 
         //Create TimeSeries
         TimeSeries ts = new BaseTimeSeries("test_series",ticks);

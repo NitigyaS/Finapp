@@ -1,9 +1,14 @@
 package application;
 
-import data.Proposal;
+import Strategies.StrategyAnalyser;
+import Strategies.StrategyBuilder;
+import Strategies.StrategyOne;
+import eu.verdelhan.ta4j.*;
+import ta.CustomTick;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PropertyPermission;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 
@@ -11,49 +16,40 @@ import java.util.regex.Matcher;
  * Created by nitigyas on 17/9/17.
  * https://github.com/team172011
  */
-public class Slave implements Callable<Proposal> {
-    public static int proposalList[] = new int[10];
-    Proposal proposal;
+public class Slave implements Callable<StrategyBuilder> {
+    public static StrategyBuilder proposalList[] = new StrategyBuilder[Master.symbolList.length];
     int taskid;
     int call_sequence = 0;
 
     public Slave(int taskid) {
         this.taskid = taskid;;
-        proposal = new Proposal();
     }
 
     @Override
-    public Proposal call() throws Exception {
-        while(true) {
-            int delay = (int) (taskid * 1000 * Math.random());
+    public StrategyBuilder call() throws Exception {
+        // Analyse the Stock given and returns the result.
+        // This can be put in loop if slaves should keep on generating it.
             call_sequence++;
-            Thread.sleep(delay);
-            int propsalInt = (int) (Math.random() * 2000);
-            System.out.format("taskID %s took %d microseconds to execute and proposed %d.\n", taskid, delay, propsalInt);
-
-            proposal.setI(propsalInt);
+            System.out.format("taskID %s  executed and proposed %s .\n", taskid ,Master.symbolList[taskid]);
 
             synchronized (this) {
-                proposalList[taskid] = propsalInt;
+                // Analyse the stock
+                StrategyBuilder strategyBuilder = AnlayseOpportunity(Master.symbolList[taskid]);
+                // Put the stock in static list So that Master can check them
+                proposalList[taskid] = strategyBuilder;
+                // Improvise the statement below
+                return strategyBuilder;
             }
-        }
+
     }
 
-    /*
-
-        public Proposal call() throws Exception {
-        int delay = (int) (taskid *1000* Math.random());
-        call_sequence++;
-        Thread.sleep(delay);
-        int propsalInt = (int)(Math.random()*2000);
-        System.out.format("taskID %s took %d microseconds to execute and proposed %d.\n", taskid, delay ,propsalInt);
-
-        proposal.setI(propsalInt);
-
-        synchronized (this){
-            proposalList[taskid]= propsalInt;
-        }
-        return proposal;
+    private StrategyOne AnlayseOpportunity(String symbol){
+        ArrayList<Tick> ticks = CustomTick.historic_data(symbol,"1month");
+        //Create TimeSeries
+        TimeSeries ts = new BaseTimeSeries(symbol,ticks);
+        //Get StrategyObject
+        StrategyOne strategyOne = new StrategyOne(ts);
+        return  strategyOne;
     }
-     */
+
 }
