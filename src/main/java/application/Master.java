@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by nitigyas on 17/9/17.
- * https://github.com/team172011
+ *
  */
 public class Master {
     // List of Stocks to Analyse

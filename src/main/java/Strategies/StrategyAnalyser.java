@@ -24,6 +24,7 @@ public class StrategyAnalyser {
         printResults(strategyBuilder, Order.OrderType.BUY, true);
         //print("");
         //printResults(strategyBuilder, Order.OrderType.SELL, true);
+        strategyBuilder.displayOnChart();
     }
 
     public void printResults(StrategyBuilder sb, Order.OrderType type, boolean showTrades){

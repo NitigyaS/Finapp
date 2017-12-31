@@ -11,10 +11,14 @@ import Strategies.StrategyOne;
 import eu.verdelhan.ta4j.*;
 import eu.verdelhan.ta4j.indicators.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.SMAIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsLowerIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsMiddleIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsUpperIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
 import eu.verdelhan.ta4j.indicators.statistics.SimpleLinearRegressionIndicator;
+import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
 import eu.verdelhan.ta4j.trading.rules.*;
 
 import java.sql.Time;
@@ -137,7 +141,7 @@ public class StockAnalyser {
 
     public void backtest() throws InterruptedException {
         // Get Historic Data
-        ticks = CustomTick.historic_data("AXISBANK","12month");
+        ticks = CustomTick.historic_data("TCS","12month");
 
         //Create TimeSeries
         TimeSeries ts = new BaseTimeSeries("test_series",ticks);
@@ -146,6 +150,35 @@ public class StockAnalyser {
         StrategyOne strategyOne = new StrategyOne(ts);
         StrategyAnalyser strategyAnalyser = new StrategyAnalyser();
         strategyAnalyser.printAllResults(strategyOne);
+
+
+    }
+
+    public void getChart(){
+        // Get Historic Data
+        ticks = CustomTick.historic_data("AXISBANK","12month");
+
+        //Create TimeSeries
+        TimeSeries ts = new BaseTimeSeries("test_series",ticks);
+        ClosePriceIndicator closePrice = new ClosePriceIndicator(ts);
+
+        RSIIndicator rsi = new RSIIndicator(closePrice,14);
+
+        // Bollinger Band
+        SMAIndicator sma = new SMAIndicator(closePrice, 20);
+        StandardDeviationIndicator sdi = new StandardDeviationIndicator(closePrice, 20);
+        BollingerBandsMiddleIndicator bolm = new BollingerBandsMiddleIndicator(sma);
+        BollingerBandsUpperIndicator bolu = new BollingerBandsUpperIndicator(bolm,sdi);
+        BollingerBandsLowerIndicator boll = new BollingerBandsLowerIndicator(bolm,sdi);
+
+        IndicatortoChart inc = new IndicatortoChart(ts);
+        inc.addData(closePrice,"Stock");
+        inc.addData(boll,"Low Bollinger Band");
+        inc.addData(bolu,"Upper Bollinger Band");
+        inc.addData(rsi,"RSI");
+
+        inc.displayChart("StrategyTwo");
+
 
 
     }

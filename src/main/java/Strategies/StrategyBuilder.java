@@ -56,5 +56,10 @@ public interface StrategyBuilder{
      */
     List<String> getParamters();
 
+    /**
+     * Display Strategy on Chart
+     */
+    void displayOnChart();
+
 }
 
