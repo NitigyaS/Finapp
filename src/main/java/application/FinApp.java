@@ -21,7 +21,7 @@ public class FinApp {
             //Master m = new Master();
             //m.startSlave();
             //CustomTick.historic_data();
-            new StockAnalyser().backtest();
+            new StockAnalyser().getChart();
 
             //System.out.println("Exce",e);
         }catch (Exception e){

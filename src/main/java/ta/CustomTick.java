@@ -74,9 +74,13 @@ public class CustomTick {
             Response response = client.newCall(request).execute();
             // Convert Response String into Tick Object
             String jsonString = response.body().string();
+            System.out.println(jsonString);
+
             JSONArray jsonArray = (JSONArray)parser.parse(jsonString);
             // Convert String date to ZonedDateTime
             NumberFormat format = NumberFormat.getInstance(Locale.US);
+            System.out.println(jsonArray.size() +"+++++++++++++");
+
             for (int i =0 ; i <jsonArray.size(); i++){
                 //Create a Json Object
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
@@ -99,7 +103,7 @@ public class CustomTick {
         }catch (ParseException px){
             System.out.print(px);
         }
-
+        System.out.println("------------"+historic_ticks.size());
         return historic_ticks;
     }
 }

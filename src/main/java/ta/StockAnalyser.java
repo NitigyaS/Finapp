@@ -14,6 +14,7 @@ import eu.verdelhan.ta4j.indicators.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsLowerIndicator;
 import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsMiddleIndicator;
 import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsUpperIndicator;
+import eu.verdelhan.ta4j.indicators.candles.BearishEngulfingIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
@@ -156,13 +157,14 @@ public class StockAnalyser {
 
     public void getChart(){
         // Get Historic Data
-        ticks = CustomTick.historic_data("AXISBANK","12month");
+        ticks = CustomTick.historic_data("tcs","3month");
 
         //Create TimeSeries
         TimeSeries ts = new BaseTimeSeries("test_series",ticks);
         ClosePriceIndicator closePrice = new ClosePriceIndicator(ts);
 
         RSIIndicator rsi = new RSIIndicator(closePrice,14);
+        BearishEngulfingIndicator bei = new BearishEngulfingIndicator(ts);
 
         // Bollinger Band
         SMAIndicator sma = new SMAIndicator(closePrice, 20);
@@ -175,9 +177,11 @@ public class StockAnalyser {
         inc.addData(closePrice,"Stock");
         inc.addData(boll,"Low Bollinger Band");
         inc.addData(bolu,"Upper Bollinger Band");
-        inc.addData(rsi,"RSI");
+        //inc.addData(rsi,"RSI");
 
-        inc.displayChart("StrategyTwo");
+        //inc.generateChart("StrategyTwo");
+
+        inc.generateCandles("TCS 3Months",false);
 
 
 

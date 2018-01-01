@@ -12,6 +12,7 @@ package Strategies;
 import eu.verdelhan.ta4j.*;
 import eu.verdelhan.ta4j.indicators.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.SMAIndicator;
+import eu.verdelhan.ta4j.indicators.SmoothedRSIIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
@@ -44,6 +45,7 @@ public class StrategyOne implements StrategyBuilder {
     // indicators
     RSIIndicator rsi;
     SMAIndicator sma;
+    SmoothedRSIIndicator smrsi;
 
 
 
@@ -102,6 +104,7 @@ public class StrategyOne implements StrategyBuilder {
     private Strategy getLongStrategy(){
         // Initialise Indicators
         rsi = new RSIIndicator(closePrice,timeFrame);
+        smrsi = new SmoothedRSIIndicator(closePrice,timeFrame);
         sma = new SMAIndicator(closePrice, timeFrame);
         // Entry Rules
         Rule entrySignal1 = new OverIndicatorRule(sma,closePrice);
@@ -120,9 +123,11 @@ public class StrategyOne implements StrategyBuilder {
 
     public void displayOnChart(){
         IndicatortoChart inc = new IndicatortoChart(series);
-        inc.addData(closePrice , "Close Price");
+        //inc.addData(closePrice , "Close Price");
         inc.addData(rsi, "Relative Strength Index");
-        inc.addData(sma, "Simple Moving Average");
-        inc.displayChart("Strategy Two");
+        inc.addData(smrsi, "Smoothed Relative Strength Index");
+
+        //inc.addData(sma, "Simple Moving Average");
+        inc.generateChart("Strategy Two");
     }
 }

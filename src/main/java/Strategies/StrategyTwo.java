@@ -164,6 +164,6 @@ public class StrategyTwo implements StrategyBuilder {
         inc.addData(closePrice , "Close Price");
         inc.addData(bolu, "Upper Bollinger Band");
         inc.addData(boll, "Low Bollinger Band");
-        inc.displayChart("Strategy Two");
+        inc.generateChart("Strategy Two");
     }
 }
