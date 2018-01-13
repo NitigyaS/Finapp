@@ -65,7 +65,7 @@ public class CustomTick {
         try {
 
             Request request = new Request.Builder()
-                    .url("http://localhost:5000/nse")
+                    .url("http://localhost:5000/nse/historic_data")
                     .get()
                     .addHeader("symbol", companyName)
                     .addHeader("daterange", dateRange)
@@ -79,7 +79,7 @@ public class CustomTick {
             JSONArray jsonArray = (JSONArray)parser.parse(jsonString);
             // Convert String date to ZonedDateTime
             NumberFormat format = NumberFormat.getInstance(Locale.US);
-            System.out.println(jsonArray.size() +"+++++++++++++");
+            //System.out.println(jsonArray.size() +"+++++++++++++");
 
             for (int i =0 ; i <jsonArray.size(); i++){
                 //Create a Json Object
@@ -103,7 +103,7 @@ public class CustomTick {
         }catch (ParseException px){
             System.out.print(px);
         }
-        System.out.println("------------"+historic_ticks.size());
+        //System.out.println("------------"+historic_ticks.size());
         return historic_ticks;
     }
 }

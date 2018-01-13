@@ -106,6 +106,7 @@ public class StrategyOne implements StrategyBuilder {
         rsi = new RSIIndicator(closePrice,timeFrame);
         smrsi = new SmoothedRSIIndicator(closePrice,timeFrame);
         sma = new SMAIndicator(closePrice, timeFrame);
+
         // Entry Rules
         Rule entrySignal1 = new OverIndicatorRule(sma,closePrice);
         Rule entrySignal2 = new UnderIndicatorRule(rsi, Decimal.valueOf(45));

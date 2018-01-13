@@ -5,6 +5,7 @@
  */
 package ta;
 
+import CustomIndicator.IIIIndicator;
 import Strategies.StrategyAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
@@ -142,7 +143,7 @@ public class StockAnalyser {
 
     public void backtest() throws InterruptedException {
         // Get Historic Data
-        ticks = CustomTick.historic_data("TCS","12month");
+        ticks = CustomTick.historic_data("TCS","3month");
 
         //Create TimeSeries
         TimeSeries ts = new BaseTimeSeries("test_series",ticks);
@@ -172,12 +173,18 @@ public class StockAnalyser {
         BollingerBandsMiddleIndicator bolm = new BollingerBandsMiddleIndicator(sma);
         BollingerBandsUpperIndicator bolu = new BollingerBandsUpperIndicator(bolm,sdi);
         BollingerBandsLowerIndicator boll = new BollingerBandsLowerIndicator(bolm,sdi);
+        System.out.println("___________________");
+
+        IIIIndicator iiiIndicator = new IIIIndicator(ts);
+
+        System.out.println(iiiIndicator.getValue(3));
 
         IndicatortoChart inc = new IndicatortoChart(ts);
         inc.addData(closePrice,"Stock");
-        inc.addData(boll,"Low Bollinger Band");
-        inc.addData(bolu,"Upper Bollinger Band");
+        //inc.addData(boll,"Low Bollinger Band");
+        //inc.addData(bolu,"Upper Bollinger Band");
         //inc.addData(rsi,"RSI");
+        inc.addData(iiiIndicator, "Intraday Intensity");
 
         //inc.generateChart("StrategyTwo");
 

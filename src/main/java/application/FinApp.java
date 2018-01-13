@@ -15,7 +15,7 @@ public class FinApp {
         ApplicationProperties applicationProperties = new ApplicationProperties();
         System.out.println("Config File Properties : " + applicationProperties.AUTHOR + " , " + applicationProperties.COMPANY);
         //Master m = new Master();
-        //m.startSlave();
+        //m.startSlave(); 1
         //CustomTick.historic_data();
         try{
             //Master m = new Master();
