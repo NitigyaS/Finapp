@@ -65,10 +65,8 @@ public class CustomTick {
         try {
 
             Request request = new Request.Builder()
-                    .url("http://localhost:5000/nse/historic_data")
+                    .url("http://localhost:8000/ticklist/"+companyName+"/"+dateRange)
                     .get()
-                    .addHeader("symbol", companyName)
-                    .addHeader("daterange", dateRange)
                     .build();
 
             Response response = client.newCall(request).execute();
@@ -84,12 +82,12 @@ public class CustomTick {
             for (int i =0 ; i <jsonArray.size(); i++){
                 //Create a Json Object
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                Decimal openPrice =  Decimal.valueOf(format.parse(jsonObject.get("Open Price").toString()).doubleValue());
-                Decimal closePrice =  Decimal.valueOf(format.parse(jsonObject.get("Close Price").toString()).doubleValue());
-                Decimal minPrice =  Decimal.valueOf(format.parse(jsonObject.get("Low Price").toString()).doubleValue());
-                Decimal maxPrice =  Decimal.valueOf(format.parse(jsonObject.get("High Price").toString()).doubleValue());
-                Decimal volume =  Decimal.valueOf(format.parse(jsonObject.get("Open Price").toString()).doubleValue());
-                LocalDate date  = LocalDate.parse(jsonObject.get("Date").toString(),DateTimeFormatter.ofPattern("d-MMM-yyyy"));
+                Decimal openPrice =  Decimal.valueOf(format.parse(jsonObject.get("open_price").toString()).doubleValue());
+                Decimal closePrice =  Decimal.valueOf(format.parse(jsonObject.get("prev_close").toString()).doubleValue());
+                Decimal minPrice =  Decimal.valueOf(format.parse(jsonObject.get("low_price").toString()).doubleValue());
+                Decimal maxPrice =  Decimal.valueOf(format.parse(jsonObject.get("high_price").toString()).doubleValue());
+                Decimal volume =  Decimal.valueOf(format.parse(jsonObject.get("total_traded_quantity").toString()).doubleValue());
+                LocalDate date  = LocalDate.parse(jsonObject.get("date").toString(),DateTimeFormatter.ofPattern("yyyy-MM-d"));
                 ZonedDateTime time = date.atStartOfDay(ZoneId.systemDefault());
                 historic_ticks.add(new BaseTick(time,openPrice, maxPrice, minPrice, closePrice,volume));
                 //System.out.println(jsonObject.get("Date"));
@@ -101,7 +99,7 @@ public class CustomTick {
         }catch (java.text.ParseException px){
             System.out.print("jjj" + px);
         }catch (ParseException px){
-            System.out.print(px);
+            System.out.print("kkk" + px);
         }
         //System.out.println("------------"+historic_ticks.size());
         return historic_ticks;
