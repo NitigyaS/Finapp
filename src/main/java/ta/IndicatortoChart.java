@@ -30,7 +30,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by home on 31/12/17.
+ * Created by nitigyas on 31/12/17.
+ *
+ * The Class Converts Indicator to Chart.
+ *
  */
 public class IndicatortoChart {
     TimeSeriesCollection dataset ;
@@ -42,29 +45,61 @@ public class IndicatortoChart {
          dataset = new TimeSeriesCollection();
     }
 
+    public void generateChart(String title){
+        chart = ChartFactory.createTimeSeriesChart(
+                title, // title
+                "Date", // x-axis label
+                "Price Per Unit", // y-axis label
+                dataset, // data
+                true, // create legend?
+                true, // generate tooltips?
+                false // generate URLs?
+        );
 
 
-    private org.jfree.data.time.TimeSeries buildChartTimeSeries(Indicator<Decimal> indicator, String name) {
-        org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries(name);
-        for (int i = 0; i < tickSeries.getTickCount(); i++) {
-            Tick tick = tickSeries.getTick(i);
-            chartTimeSeries.add(new Day(Date.from(tick.getEndTime().toInstant())), indicator.getValue(i).toDouble());
-        }
-        return chartTimeSeries;
+        XYPlot plot = (XYPlot) chart.getXYPlot();
+        plot.setRangeGridlinePaint(Color.lightGray);
+        plot.setBackgroundPaint(Color.white);
+
+        DateAxis axis = (DateAxis) plot.getDomainAxis();
+        axis.setDateFormatOverride(new SimpleDateFormat("yyyy-MM-dd"));
+        displayChart();
+
     }
 
-    /**
-     * Add Inidcators on the Graph
-     * @param indicator
-     * @param name
-     */
-    public void addData( Indicator<Decimal> indicator , String name){
-        dataset.addSeries(buildChartTimeSeries(indicator , name));
+    public void generateCandles(String title, Boolean volumeFlag){
+        OHLCDataset ohlcDataset = createOHLCDataset(tickSeries);
+        TimeSeriesCollection xyDataset = createAdditionalDataset(tickSeries);
+
+        chart = ChartFactory.createCandlestickChart(
+                title,
+                "Time",
+                "Rupee",
+                ohlcDataset,
+                true);
+        // Candlestick rendering
+
+        CandlestickRenderer renderer = new CandlestickRenderer();
+        renderer.setAutoWidthMethod(CandlestickRenderer.WIDTHMETHOD_AVERAGE);
+        renderer.setDrawVolume(volumeFlag);
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(renderer);
+        int index = 1;
+        plot.setDataset(index, xyDataset);
+        plot.mapDatasetToRangeAxis(index, 0);
+        XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
+        renderer2.setSeriesPaint(index, Color.blue);
+        plot.setRenderer(index, renderer2);
+        // Misc
+        plot.setRangeGridlinePaint(Color.lightGray);
+        plot.setBackgroundPaint(Color.white);
+        NumberAxis numberAxis = (NumberAxis) plot.getRangeAxis();
+        numberAxis.setAutoRangeIncludesZero(false);
+        plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+        displayChart();
+
     }
 
-    /**
-     * Displays a chart in a frame.
-\   */
     private void displayChart() {
 
         // Chart panel
@@ -81,27 +116,23 @@ public class IndicatortoChart {
         frame.setVisible(true);
     }
 
-    public void generateChart(String title){
-        chart = ChartFactory.createTimeSeriesChart(
-                title, // title
-                "Date", // x-axis label
-                "Price Per Unit", // y-axis label
-                dataset, // data
-                true, // create legend?
-                true, // generate tooltips?
-                false // generate URLs?
-        );
-
-
-        XYPlot plot = (XYPlot) chart.getPlot();
-        plot.setRangeGridlinePaint(Color.lightGray);
-        plot.setBackgroundPaint(Color.white);
-        DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("yyyy-MM-dd"));
-        displayChart();
-
+    private org.jfree.data.time.TimeSeries buildChartTimeSeries(Indicator<Decimal> indicator, String name) {
+        org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries(name);
+        for (int i = 0; i < tickSeries.getTickCount(); i++) {
+            Tick tick = tickSeries.getTick(i);
+            chartTimeSeries.add(new Day(Date.from(tick.getEndTime().toInstant())), indicator.getValue(i).toDouble());
+        }
+        return chartTimeSeries;
     }
 
+    /**
+     * Add Inidcators on the Graph
+     * @param indicator
+     * @param name
+     */
+    public void addData(   Indicator<Decimal> indicator , String name){
+        dataset.addSeries(buildChartTimeSeries(indicator , name));
+    }
 
     // CandleStick Code
     private OHLCDataset createOHLCDataset(TimeSeries series) {
@@ -140,38 +171,7 @@ public class IndicatortoChart {
         return dataset;
     }
 
-    public void generateCandles(String title, Boolean volumeFlag){
-        OHLCDataset ohlcDataset = createOHLCDataset(tickSeries);
-        TimeSeriesCollection xyDataset = createAdditionalDataset(tickSeries);
 
-        chart = ChartFactory.createCandlestickChart(
-                title,
-                "Time",
-                "Rupee",
-                ohlcDataset,
-                true);
-        // Candlestick rendering
-
-        CandlestickRenderer renderer = new CandlestickRenderer();
-        renderer.setAutoWidthMethod(CandlestickRenderer.WIDTHMETHOD_AVERAGE);
-        renderer.setDrawVolume(volumeFlag);
-        XYPlot plot = chart.getXYPlot();
-        plot.setRenderer(renderer);
-        int index = 1;
-        plot.setDataset(index, xyDataset);
-        plot.mapDatasetToRangeAxis(index, 0);
-        XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
-        renderer2.setSeriesPaint(index, Color.blue);
-        plot.setRenderer(index, renderer2);
-        // Misc
-        plot.setRangeGridlinePaint(Color.lightGray);
-        plot.setBackgroundPaint(Color.white);
-        NumberAxis numberAxis = (NumberAxis) plot.getRangeAxis();
-        numberAxis.setAutoRangeIncludesZero(false);
-        plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-        displayChart();
-
-    }
 
 
 

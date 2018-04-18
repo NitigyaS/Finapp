@@ -18,37 +18,58 @@ import java.util.regex.Matcher;
  */
 public class Slave implements Callable<StrategyBuilder> {
     public static StrategyBuilder proposalList[] = new StrategyBuilder[Master.symbolList.length];
+
     int taskid;
+
     int call_sequence = 0;
 
     public Slave(int taskid) {
+
         this.taskid = taskid;;
+
     }
 
     @Override
     public StrategyBuilder call() throws Exception {
+
         // Analyse the Stock given and returns the result.
+
         // This can be put in loop if slaves should keep on generating it.
+
             call_sequence++;
+
             System.out.format("taskID %s  executed and proposed %s .\n", taskid ,Master.symbolList[taskid]);
 
             synchronized (this) {
+
                 // Analyse the stock
+
                 StrategyBuilder strategyBuilder = AnlayseOpportunity(Master.symbolList[taskid]);
+
                 // Put the stock in static list So that Master can check them
+
                 proposalList[taskid] = strategyBuilder;
+
                 // Improvise the statement below
+
                 return strategyBuilder;
+
             }
 
     }
 
     private StrategyOne AnlayseOpportunity(String symbol){
+
         ArrayList<Tick> ticks = CustomTick.historic_data(symbol,"1month");
+
         //Create TimeSeries
+
         TimeSeries ts = new BaseTimeSeries(symbol,ticks);
+
         //Get StrategyObject
+
         StrategyOne strategyOne = new StrategyOne(ts);
+
         return  strategyOne;
     }
 

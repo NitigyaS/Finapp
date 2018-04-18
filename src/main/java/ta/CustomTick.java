@@ -23,45 +23,23 @@ import java.util.Locale;
 /**
  * Created by nitigyas on 10/12/17.
  * https://github.com/team172011
+ * Class was originally created to provide Custom Tick data to sanity check the code.
+ * It has 1 method
+ *      historic_data()
+ *          Fetches Data from External API , converts it to the Tick Class and returns an ArrayList<Tick> .
  */
+
+
 public class CustomTick {
 
-
-    private static Decimal LAST_TICK_CLOSE_PRICE  ;
-
-    CustomTick(){
-
-    }
-    // Fcuntion to Generate Random Decimal Value
-    private static Decimal randDecimal(Decimal min, Decimal max) {
-        Decimal randomDecimal = null;
-        if (min != null && max != null && min.isLessThan(max)) {
-            randomDecimal = max.minus(min).multipliedBy(Decimal.valueOf(Math.random())).plus(min);
-        }
-        return randomDecimal;
-    }
-
-    public static Tick generateRandomTick() {
-        //Fetch The Time now
-        ZonedDateTime endTime  = ZonedDateTime.now();
-        //Create First Tick
-        Tick newTick  = new BaseTick(endTime, 105.42, 112.99, 104.01, 111.42, 1337);
-        LAST_TICK_CLOSE_PRICE = newTick.getClosePrice();
-        //Random Increment Decrement Percentage
-        final Decimal maxRange = Decimal.valueOf("0.05"); // 3.0%
-        Decimal openPrice = LAST_TICK_CLOSE_PRICE;
-        Decimal minPrice = openPrice.minus(openPrice.multipliedBy(maxRange.multipliedBy(Decimal.valueOf(Math.random()))));
-        Decimal maxPrice = openPrice.plus(openPrice.multipliedBy(maxRange.multipliedBy(Decimal.valueOf(Math.random()))));
-        Decimal closePrice = randDecimal(minPrice, maxPrice);
-        LAST_TICK_CLOSE_PRICE = closePrice;
-        // Create Tick
-        return new BaseTick(ZonedDateTime.now(), openPrice, maxPrice, minPrice, closePrice, Decimal.ONE);
-    }
-
     public static ArrayList<Tick> historic_data(String companyName , String dateRange){
+
         ArrayList<Tick> historic_ticks = new ArrayList<Tick>();
+
         JSONParser parser = new JSONParser();
+
         OkHttpClient client = new OkHttpClient();
+
         try {
 
             Request request = new Request.Builder()
@@ -70,38 +48,50 @@ public class CustomTick {
                     .build();
 
             Response response = client.newCall(request).execute();
-            // Convert Response String into Tick Object
-            String jsonString = response.body().string();
-            System.out.println(jsonString);
+
+            String jsonString = response.body().string();                       // Convert Response String into Tick Object
 
             JSONArray jsonArray = (JSONArray)parser.parse(jsonString);
-            // Convert String date to ZonedDateTime
+
             NumberFormat format = NumberFormat.getInstance(Locale.US);
-            //System.out.println(jsonArray.size() +"+++++++++++++");
 
             for (int i =0 ; i <jsonArray.size(); i++){
-                //Create a Json Object
-                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);          //Create a Json Object
+
                 Decimal openPrice =  Decimal.valueOf(format.parse(jsonObject.get("open_price").toString()).doubleValue());
+
                 Decimal closePrice =  Decimal.valueOf(format.parse(jsonObject.get("prev_close").toString()).doubleValue());
+
                 Decimal minPrice =  Decimal.valueOf(format.parse(jsonObject.get("low_price").toString()).doubleValue());
+
                 Decimal maxPrice =  Decimal.valueOf(format.parse(jsonObject.get("high_price").toString()).doubleValue());
+
                 Decimal volume =  Decimal.valueOf(format.parse(jsonObject.get("total_traded_quantity").toString()).doubleValue());
+
                 LocalDate date  = LocalDate.parse(jsonObject.get("date").toString(),DateTimeFormatter.ofPattern("yyyy-MM-d"));
+
                 ZonedDateTime time = date.atStartOfDay(ZoneId.systemDefault());
+
                 historic_ticks.add(new BaseTick(time,openPrice, maxPrice, minPrice, closePrice,volume));
-                //System.out.println(jsonObject.get("Date"));
             }
-            // Print the Json Data Reveived
-            //System.out.print(jsonString);
+
         }catch (IOException iox){
-            System.out.print("lll" + iox);
+
+            System.out.print("IOException Received at CustomTick : " + iox);
+
         }catch (java.text.ParseException px){
-            System.out.print("jjj" + px);
+
+            System.out.print("Text ParseException Received at CustomTick" + px);
+
         }catch (ParseException px){
-            System.out.print("kkk" + px);
+
+            System.out.print("ParseException Received at CustomTick" + px);
+
         }
-        //System.out.println("------------"+historic_ticks.size());
+
         return historic_ticks;
+
     }
+
 }

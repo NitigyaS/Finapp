@@ -21,58 +21,82 @@ public class StrategyAnalyser {
 
 
     public void printAllResults(StrategyBuilder strategyBuilder){
-        printResults(strategyBuilder, Order.OrderType.BUY, true);
-        //print("");
-        //printResults(strategyBuilder, Order.OrderType.SELL, true);
+
+        printResults(strategyBuilder, true);
+
         strategyBuilder.displayOnChart();
+
     }
 
-    public void printResults(StrategyBuilder sb, Order.OrderType type, boolean showTrades){
-        if (type.equals(Order.OrderType.SELL))
-            print("RUN STRATEGY SHORT:");
-        else
-            print("RUN STRATEGY LONG:");
+    public void printResults(StrategyBuilder sb, boolean showTrades){
 
-        TradingRecord record = sb.getTradingRecord(type);
+        print("RUN STRATEGY LONG:");
+
+        TradingRecord record = sb.getTradingRecord();
+
         if (record == null)
+
             print("   -no long record found");
+
         else{
+
             TimeSeries series = sb.getTimeSeries();
 
             print(" -General:");
+
             print("     -Series Name:                       " + series.getName());
+
             print("     -Period:                            " + series.getSeriesPeriodDescription());
+
             print("     -Strategy Name:                     " + sb.getName());
+
             print("     -Strategy Parameters:               " + sb.getParamters());
+
             print(" -Performance Criterions: ");
+
             print("     -Average Profit:                    " + avgProfit.calculate(series, record));
+
             print("     -Total Profit:                      " + totalProfit.calculate(series, record));
+
             print("     -Buy and Hold:                      " + buyAndHold.calculate(series, record));
+
             print("     -numTicks:                          " + numTicks.calculate(series, record));
+
             print("     -numTrades:                         " + numTrades.calculate(series, record));
+
             print("     -Average Profit vs. Buy and Hold:    " + vsByAndHold.calculate(series, record));
+
             print("     -Average Profitable Trades:         " + avgProfitTrades.calculate(series, record));
+
             print("     -Reward Risk Ratio:                 " + rewardRiskRatio.calculate(series, record));
+
             print("     -Maximum Drawdown:                  " + maxDrawDown.calculate(series, record));
 
             print(" -Trades:");
+
             if (showTrades) {
+
                 for (int i = 0; i < record.getTrades().size(); i++) {
+
                     Order entry = record.getTrades().get(i).getEntry();
+
                     Order exit = record.getTrades().get(i).getExit();
+
                     Tick entryTick = series.getTick(entry.getIndex());
+
                     Tick exitTick = series.getTick(exit.getIndex());
 
                     print("     -Entry: "+entry.getIndex()+" "+entryTick.getSimpleDateName()+" "+round(entry.getPrice(),4)
                             +" Exit: "+exit.getIndex()+" "+exitTick.getSimpleDateName()+" "+round(exit.getPrice(),4)+" ");
+
                 }
+
             }
+
         }
+
     }
 
-    public void printResults(StrategyBuilder sb, Order.OrderType type){
-        printResults(sb, type, false);
-    }
 
     public void print(String msg){
         System.out.println(msg);

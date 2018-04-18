@@ -13,6 +13,10 @@ import eu.verdelhan.ta4j.*;
 import eu.verdelhan.ta4j.indicators.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.SmoothedRSIIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandWidthIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsLowerIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsMiddleIndicator;
+import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsUpperIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
@@ -46,6 +50,10 @@ public class StrategyOne implements StrategyBuilder {
     RSIIndicator rsi;
     SMAIndicator sma;
     SmoothedRSIIndicator smrsi;
+    BollingerBandsMiddleIndicator bolm;
+    BollingerBandsUpperIndicator bolu;
+    BollingerBandsLowerIndicator boll;
+    BollingerBandWidthIndicator bolbw;
 
 
 
@@ -65,22 +73,19 @@ public class StrategyOne implements StrategyBuilder {
     public void initStrategy(TimeSeries series) {
 
         this.series = series;
-        this.minPrice = new MinPriceIndicator(this.series);
         this.closePrice = new ClosePriceIndicator(this.series);
-        this.maxPrice = new MaxPriceIndicator(this.series);
+
     }
 
     @Override
-    public Strategy buildStrategy(Order.OrderType type) {
-        if (type.equals(Order.OrderType.SELL))
-            return getLongStrategy();
+    public Strategy buildStrategy() {
         return getLongStrategy();
     }
 
     @Override
-    public TradingRecord getTradingRecord(Order.OrderType type) {
+    public TradingRecord getTradingRecord() {
         TimeSeriesManager seriesManager = new TimeSeriesManager(series);
-        Strategy strategyOne = buildStrategy(type);
+        Strategy strategyOne = buildStrategy();
         TradingRecord tradingRecord = seriesManager.run(strategyOne);
         return  tradingRecord;
 
@@ -118,17 +123,12 @@ public class StrategyOne implements StrategyBuilder {
         return strategy;
     }
 
-    private Strategy getShortStrategy(){
-        return null;
-    }
-
     public void displayOnChart(){
         IndicatortoChart inc = new IndicatortoChart(series);
-        //inc.addData(closePrice , "Close Price");
-        inc.addData(rsi, "Relative Strength Index");
+
+        inc.addData(rsi, "Relative Strength Index");    // Add Indicator to plot
         inc.addData(smrsi, "Smoothed Relative Strength Index");
 
-        //inc.addData(sma, "Simple Moving Average");
         inc.generateChart("Strategy Two");
     }
 }
