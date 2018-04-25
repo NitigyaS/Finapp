@@ -1,6 +1,6 @@
 package application;
 
-import Strategies.StrategyAnalyser;
+import Strategies.BackTestAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
 import org.ta4j.core.*;

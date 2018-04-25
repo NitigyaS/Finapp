@@ -6,7 +6,7 @@
 package ta;
 
 import CustomIndicator.IIIIndicator;
-import Strategies.StrategyAnalyser;
+import Strategies.BackTestAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
 import org.ta4j.*;
@@ -42,7 +42,7 @@ import java.util.List;
  *          What to get the Data
  *          What Strategy to Use
  *      It does :
- *          It Passes the result to StrategyAnalyser which dumps the result on scree.
+ *          It Passes the result to BackTestAnalyser which dumps the result on scree.
  *
  */
 
@@ -58,7 +58,7 @@ public class StockAnalyser {
 
         StrategyOne strategyOne = new StrategyOne(ts);                              //Initialize Strategy
 
-        StrategyAnalyser strategyAnalyser = new StrategyAnalyser();                 //Initialize Strategy Analyser
+        BackTestAnalyser strategyAnalyser = new BackTestAnalyser();                 //Initialize Strategy Analyser
 
         strategyAnalyser.printAllResults(strategyOne);                              // Pass the Strategy to Analyse
 

@@ -1,6 +1,6 @@
 package application;
 
-import Strategies.StrategyAnalyser;
+import Strategies.BackTestAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
 import org.ta4j.core.Strategy;
@@ -46,7 +46,7 @@ public class Master {
                 System.out.println("Till Now We Got Following Proposal : ");
                 for (StrategyBuilder prp : Slave.proposalList) {
                     //System.out.print(prp.getName() + " , ");
-                    new StrategyAnalyser().printAllResults((StrategyOne)prp);
+                    new BackTestAnalyser().printAllResults((StrategyOne)prp);
                 }
                 System.out.println("");
 

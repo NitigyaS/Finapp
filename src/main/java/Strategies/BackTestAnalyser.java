@@ -7,7 +7,7 @@ import org.ta4j.core.analysis.criteria.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class StrategyAnalyser {
+public class BackTestAnalyser {
 
     private AverageProfitableTradesCriterion avgProfitTrades = new AverageProfitableTradesCriterion();
     private AverageProfitCriterion avgProfit = new AverageProfitCriterion();
