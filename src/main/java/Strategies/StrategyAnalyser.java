@@ -1,8 +1,8 @@
 package Strategies;
 
 import Strategies.StrategyBuilder;
-import eu.verdelhan.ta4j.*;
-import eu.verdelhan.ta4j.analysis.criteria.*;
+import org.ta4j.core.*;
+import org.ta4j.core.analysis.criteria.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +14,7 @@ public class StrategyAnalyser {
     private TotalProfitCriterion totalProfit = new TotalProfitCriterion();
     private BuyAndHoldCriterion buyAndHold = new BuyAndHoldCriterion();
     private NumberOfTradesCriterion numTrades = new NumberOfTradesCriterion();
-    private NumberOfTicksCriterion numTicks = new NumberOfTicksCriterion();
+    private NumberOfBarsCriterion numTicks = new NumberOfBarsCriterion();
     private VersusBuyAndHoldCriterion vsByAndHold = new VersusBuyAndHoldCriterion(avgProfit);
     private RewardRiskRatioCriterion rewardRiskRatio = new RewardRiskRatioCriterion();
     private MaximumDrawdownCriterion maxDrawDown = new MaximumDrawdownCriterion();
@@ -82,9 +82,9 @@ public class StrategyAnalyser {
 
                     Order exit = record.getTrades().get(i).getExit();
 
-                    Tick entryTick = series.getTick(entry.getIndex());
+                    Bar entryTick = series.getBar(entry.getIndex());
 
-                    Tick exitTick = series.getTick(exit.getIndex());
+                    Bar exitTick = series.getBar(exit.getIndex());
 
                     print("     -Entry: "+entry.getIndex()+" "+entryTick.getSimpleDateName()+" "+round(entry.getPrice(),4)
                             +" Exit: "+exit.getIndex()+" "+exitTick.getSimpleDateName()+" "+round(exit.getPrice(),4)+" ");

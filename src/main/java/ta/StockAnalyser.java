@@ -9,19 +9,22 @@ import CustomIndicator.IIIIndicator;
 import Strategies.StrategyAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
-import eu.verdelhan.ta4j.*;
-import eu.verdelhan.ta4j.indicators.RSIIndicator;
-import eu.verdelhan.ta4j.indicators.SMAIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsLowerIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsUpperIndicator;
-import eu.verdelhan.ta4j.indicators.candles.BearishEngulfingIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
-import eu.verdelhan.ta4j.indicators.statistics.SimpleLinearRegressionIndicator;
-import eu.verdelhan.ta4j.indicators.statistics.StandardDeviationIndicator;
-import eu.verdelhan.ta4j.trading.rules.*;
+import org.ta4j.*;
+import org.ta4j.core.Bar;
+import org.ta4j.core.BaseTimeSeries;
+import org.ta4j.core.TimeSeries;
+import org.ta4j.core.indicators.RSIIndicator;
+import org.ta4j.core.indicators.SMAIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsMiddleIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsUpperIndicator;
+import org.ta4j.core.indicators.candles.BearishEngulfingIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.MaxPriceIndicator;
+import org.ta4j.core.indicators.helpers.MinPriceIndicator;
+import org.ta4j.core.indicators.statistics.SimpleLinearRegressionIndicator;
+import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
+import org.ta4j.core.trading.rules.*;
 
 import java.sql.Time;
 import java.time.ZonedDateTime;
@@ -33,7 +36,7 @@ import java.util.List;
  * Created by nitigyas on 21/9/17.
  * https://github.com/team172011
  *
- * StockAnalyser has 2 methods
+ * StockAnalyser has 1 methods
  *      backTest()
  *      In this Method you define following
  *          What to get the Data
@@ -45,13 +48,13 @@ import java.util.List;
 
 public class StockAnalyser {
 
-    List<Tick> ticks = new ArrayList<Tick>();
+    List<Bar> bar = new ArrayList<Bar>();
 
     public void backTest() throws InterruptedException {
 
-        ticks = CustomTick.historic_data("TCS","3month");    // Get Historic Data
+        bar = CustomTick.historic_data("TCS","3month");    // Get Historic Data
 
-        TimeSeries ts = new BaseTimeSeries("test_series",ticks);              //Create TimeSeries
+        TimeSeries ts = new BaseTimeSeries("test_series",bar);              //Create TimeSeries
 
         StrategyOne strategyOne = new StrategyOne(ts);                              //Initialize Strategy
 

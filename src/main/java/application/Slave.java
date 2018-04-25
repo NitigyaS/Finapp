@@ -3,7 +3,7 @@ package application;
 import Strategies.StrategyAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
-import eu.verdelhan.ta4j.*;
+import org.ta4j.core.*;
 import ta.CustomTick;
 
 import java.util.ArrayList;
@@ -60,11 +60,11 @@ public class Slave implements Callable<StrategyBuilder> {
 
     private StrategyOne AnlayseOpportunity(String symbol){
 
-        ArrayList<Tick> ticks = CustomTick.historic_data(symbol,"1month");
+        ArrayList<Bar> bar = CustomTick.historic_data(symbol,"1month");
 
         //Create TimeSeries
 
-        TimeSeries ts = new BaseTimeSeries(symbol,ticks);
+        TimeSeries ts = new BaseTimeSeries(symbol,bar);
 
         //Get StrategyObject
 

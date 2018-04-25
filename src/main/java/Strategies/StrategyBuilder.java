@@ -10,10 +10,10 @@ package Strategies;
  * https://github.com/team172011
  */
 
-import eu.verdelhan.ta4j.Order;
-import eu.verdelhan.ta4j.Strategy;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.TradingRecord;
+import org.ta4j.core.Order;
+import org.ta4j.core.Strategy;
+import org.ta4j.core.TimeSeries;
+import org.ta4j.core.TradingRecord;
 import java.util.List;
 
 public interface StrategyBuilder{

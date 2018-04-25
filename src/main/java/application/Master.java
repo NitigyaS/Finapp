@@ -3,7 +3,7 @@ package application;
 import Strategies.StrategyAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
-import eu.verdelhan.ta4j.Strategy;
+import org.ta4j.core.Strategy;
 
 import java.util.List;
 import java.util.ArrayList;

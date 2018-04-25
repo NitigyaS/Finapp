@@ -1,8 +1,8 @@
 package ta;
-import eu.verdelhan.ta4j.BaseTick;
-import eu.verdelhan.ta4j.BaseTradingRecord;
-import eu.verdelhan.ta4j.Decimal;
-import eu.verdelhan.ta4j.Tick;
+import org.ta4j.core.BaseBar;
+import org.ta4j.core.BaseTradingRecord;
+import org.ta4j.core.Decimal;
+import org.ta4j.core.Bar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,9 +32,9 @@ import java.util.Locale;
 
 public class CustomTick {
 
-    public static ArrayList<Tick> historic_data(String companyName , String dateRange){
+    public static ArrayList<Bar> historic_data(String companyName , String dateRange){
 
-        ArrayList<Tick> historic_ticks = new ArrayList<Tick>();
+        ArrayList<Bar> historic_ticks = new ArrayList<Bar>();
 
         JSONParser parser = new JSONParser();
 
@@ -73,7 +73,7 @@ public class CustomTick {
 
                 ZonedDateTime time = date.atStartOfDay(ZoneId.systemDefault());
 
-                historic_ticks.add(new BaseTick(time,openPrice, maxPrice, minPrice, closePrice,volume));
+                historic_ticks.add(new BaseBar(time,openPrice, maxPrice, minPrice, closePrice,volume));
             }
 
         }catch (IOException iox){
