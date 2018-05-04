@@ -9,21 +9,21 @@
  */
 package Strategies;
 
-import eu.verdelhan.ta4j.*;
-import eu.verdelhan.ta4j.indicators.RSIIndicator;
-import eu.verdelhan.ta4j.indicators.SMAIndicator;
-import eu.verdelhan.ta4j.indicators.SmoothedRSIIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandWidthIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsLowerIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsMiddleIndicator;
-import eu.verdelhan.ta4j.indicators.bollinger.BollingerBandsUpperIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.MaxPriceIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.MinPriceIndicator;
-import eu.verdelhan.ta4j.trading.rules.CrossedDownIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.CrossedUpIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
+import org.ta4j.core.*;
+import org.ta4j.core.indicators.RSIIndicator;
+import org.ta4j.core.indicators.SMAIndicator;
+import org.ta4j.core.indicators.*;
+import org.ta4j.core.indicators.bollinger.BollingerBandWidthIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsMiddleIndicator;
+import org.ta4j.core.indicators.bollinger.BollingerBandsUpperIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.MaxPriceIndicator;
+import org.ta4j.core.indicators.helpers.MinPriceIndicator;
+import org.ta4j.core.trading.rules.CrossedDownIndicatorRule;
+import org.ta4j.core.trading.rules.CrossedUpIndicatorRule;
+import org.ta4j.core.trading.rules.OverIndicatorRule;
+import org.ta4j.core.trading.rules.UnderIndicatorRule;
 import ta.IndicatortoChart;
 
 
@@ -49,7 +49,7 @@ public class StrategyOne implements StrategyBuilder {
     // indicators
     RSIIndicator rsi;
     SMAIndicator sma;
-    SmoothedRSIIndicator smrsi;
+    RSIIndicator smrsi;
     BollingerBandsMiddleIndicator bolm;
     BollingerBandsUpperIndicator bolu;
     BollingerBandsLowerIndicator boll;
@@ -71,10 +71,8 @@ public class StrategyOne implements StrategyBuilder {
 
     @Override
     public void initStrategy(TimeSeries series) {
-
         this.series = series;
         this.closePrice = new ClosePriceIndicator(this.series);
-
     }
 
     @Override
@@ -109,7 +107,6 @@ public class StrategyOne implements StrategyBuilder {
     private Strategy getLongStrategy(){
         // Initialise Indicators
         rsi = new RSIIndicator(closePrice,timeFrame);
-        smrsi = new SmoothedRSIIndicator(closePrice,timeFrame);
         sma = new SMAIndicator(closePrice, timeFrame);
 
         // Entry Rules
@@ -127,7 +124,7 @@ public class StrategyOne implements StrategyBuilder {
         IndicatortoChart inc = new IndicatortoChart(series);
 
         inc.addData(rsi, "Relative Strength Index");    // Add Indicator to plot
-        inc.addData(smrsi, "Smoothed Relative Strength Index");
+        //inc.addData(smrsi, "Smoothed Relative Strength Index");
 
         inc.generateChart("Strategy Two");
     }

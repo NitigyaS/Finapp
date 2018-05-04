@@ -1,10 +1,10 @@
 package ta;
 
-import eu.verdelhan.ta4j.Decimal;
-import eu.verdelhan.ta4j.Indicator;
-import eu.verdelhan.ta4j.Tick;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.Decimal;
+import org.ta4j.core.Indicator;
+import org.ta4j.core.Bar;
+import org.ta4j.core.TimeSeries;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -118,9 +118,9 @@ public class IndicatortoChart {
 
     private org.jfree.data.time.TimeSeries buildChartTimeSeries(Indicator<Decimal> indicator, String name) {
         org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries(name);
-        for (int i = 0; i < tickSeries.getTickCount(); i++) {
-            Tick tick = tickSeries.getTick(i);
-            chartTimeSeries.add(new Day(Date.from(tick.getEndTime().toInstant())), indicator.getValue(i).toDouble());
+        for (int i = 0; i < tickSeries.getBarCount(); i++) {
+            Bar bar = tickSeries.getBar(i);
+            chartTimeSeries.add(new Day(Date.from(bar.getEndTime().toInstant())), indicator.getValue(i).toDouble());
         }
         return chartTimeSeries;
     }
@@ -136,23 +136,23 @@ public class IndicatortoChart {
 
     // CandleStick Code
     private OHLCDataset createOHLCDataset(TimeSeries series) {
-        final int nbTicks = series.getTickCount();
+        final int nbBars = series.getBarCount();
 
-        Date[] dates = new Date[nbTicks];
-        double[] opens = new double[nbTicks];
-        double[] highs = new double[nbTicks];
-        double[] lows = new double[nbTicks];
-        double[] closes = new double[nbTicks];
-        double[] volumes = new double[nbTicks];
+        Date[] dates = new Date[nbBars];
+        double[] opens = new double[nbBars];
+        double[] highs = new double[nbBars];
+        double[] lows = new double[nbBars];
+        double[] closes = new double[nbBars];
+        double[] volumes = new double[nbBars];
 
-        for (int i = 0; i < nbTicks; i++) {
-            Tick tick = series.getTick(i);
-            dates[i] = new Date(tick.getEndTime().toEpochSecond() * 1000);
-            opens[i] = tick.getOpenPrice().toDouble();
-            highs[i] = tick.getMaxPrice().toDouble();
-            lows[i] = tick.getMinPrice().toDouble();
-            closes[i] = tick.getClosePrice().toDouble();
-            volumes[i] = tick.getVolume().toDouble();
+        for (int i = 0; i < nbBars; i++) {
+            Bar bar = series.getBar(i);
+            dates[i] = new Date(bar.getEndTime().toEpochSecond() * 1000);
+            opens[i] = bar.getOpenPrice().toDouble();
+            highs[i] = bar.getMaxPrice().toDouble();
+            lows[i] = bar.getMinPrice().toDouble();
+            closes[i] = bar.getClosePrice().toDouble();
+            volumes[i] = bar.getVolume().toDouble();
         }
 
         OHLCDataset dataset = new DefaultHighLowDataset("OHLC", dates, highs, lows, opens, closes, volumes);
@@ -163,9 +163,9 @@ public class IndicatortoChart {
         ClosePriceIndicator indicator = new ClosePriceIndicator(series);
         //TimeSeriesCollection dataset = new TimeSeriesCollection();
         org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries("CandleStick Chart");
-        for (int i = 0; i < series.getTickCount(); i++) {
-            Tick tick = series.getTick(i);
-            chartTimeSeries.add(new Second(new Date(tick.getEndTime().toEpochSecond() * 1000)), indicator.getValue(i).toDouble());
+        for (int i = 0; i < series.getBarCount(); i++) {
+            Bar bar = series.getBar(i);
+            chartTimeSeries.add(new Second(new Date(bar.getEndTime().toEpochSecond() * 1000)), indicator.getValue(i).toDouble());
         }
         dataset.addSeries(chartTimeSeries);
         return dataset;

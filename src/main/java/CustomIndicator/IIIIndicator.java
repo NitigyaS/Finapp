@@ -1,10 +1,10 @@
 package CustomIndicator;
 
-import eu.verdelhan.ta4j.Decimal;
-import eu.verdelhan.ta4j.Indicator;
-import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.CachedIndicator;
-import eu.verdelhan.ta4j.indicators.helpers.*;
+import org.ta4j.core.Decimal;
+import org.ta4j.core.Indicator;
+import org.ta4j.core.TimeSeries;
+import org.ta4j.core.indicators.CachedIndicator;
+import org.ta4j.core.indicators.helpers.*;
 
 /**
  * Intraday Intensity Index
