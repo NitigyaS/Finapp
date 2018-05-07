@@ -2,8 +2,7 @@ package application;
 
 
 import constant.ApplicationProperties;
-import ta.CustomTick;
-import ta.StockAnalyser;
+import Analyser.StockAnalyser;
 
 /**
  * Created by nitigyas on 17/9/17.

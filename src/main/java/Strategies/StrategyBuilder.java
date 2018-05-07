@@ -10,51 +10,58 @@ package Strategies;
  * https://github.com/team172011
  */
 
-import org.ta4j.core.Order;
-import org.ta4j.core.Strategy;
-import org.ta4j.core.TimeSeries;
-import org.ta4j.core.TradingRecord;
+import org.ta4j.core.*;
+import ta.IndicatortoChart;
+
 import java.util.List;
 
-public interface StrategyBuilder{
+public abstract class StrategyBuilder{
+
+    TimeSeries timeSeries;
 
     /**
      * initialize the strategy with default parameters
      * @param series the time serie to initilize the strategy with
      */
-    void initStrategy(TimeSeries series);
+    abstract void initStrategy(TimeSeries series);
 
     /**
      * Create and get a long or short strategy.Also need to create private methods for Long/Short Strategy.
      * @return a strategy (long) corresponding to the order type, null if order type is not supported
      */
-    Strategy buildStrategy();
+    abstract  Strategy buildStrategy();
 
     /**
      * Runs the strategy on the time series it is initialized with
      * Useful for Historical Analysis
      * @return results as a trading record
      */
-    TradingRecord getTradingRecord();
+    public TradingRecord getTradingRecord(){
+        TimeSeriesManager seriesManager = new TimeSeriesManager(timeSeries);
+        return seriesManager.run(buildStrategy());
+    }
 
     /**
      * Get the current time series the strategy is initilized with
      * @return current time series the strategy is initilized with
      */
-    TimeSeries getTimeSeries();
+    public TimeSeries getTimeSeries()
+    {
+        return this.timeSeries;
+    }
 
     /**
      * Get the name of the strategy
      * @return name of the strategy
      */
-    String getName();
+    public abstract String getName();
 
     /**
      * Get the parameters of the strategy
      * @return a list of parameters of the strategy
      *
      */
-    List<String> getParamters();
+    public abstract List<String> getParamters();
 
     /**
      * Display Strategy on Chart
@@ -66,7 +73,10 @@ public interface StrategyBuilder{
      *              Candles
      *              LineGraph
      */
-    void displayOnChart();
+    public void displayOnChart(){
+        IndicatortoChart inc = new IndicatortoChart(timeSeries);
+        inc.generateCandles(getName(),false);
+    }
 
 }
 

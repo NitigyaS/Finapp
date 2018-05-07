@@ -1,4 +1,4 @@
-package Strategies;
+package Analyser;
 
 import Strategies.StrategyBuilder;
 import org.ta4j.core.*;

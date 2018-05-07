@@ -1,16 +1,14 @@
 package application;
 
-import Strategies.BackTestAnalyser;
+import Analyser.BackTestAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
-import org.ta4j.core.Strategy;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by nitigyas on 17/9/17.

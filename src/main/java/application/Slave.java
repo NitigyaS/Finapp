@@ -1,16 +1,12 @@
 package application;
 
-import Strategies.BackTestAnalyser;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
 import org.ta4j.core.*;
 import ta.CustomTick;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.PropertyPermission;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
 
 /**
  * Created by nitigyas on 17/9/17.
@@ -68,7 +64,7 @@ public class Slave implements Callable<StrategyBuilder> {
 
         //Get StrategyObject
 
-        StrategyOne strategyOne = new StrategyOne(ts);
+        StrategyOne strategyOne = new StrategyOne(ts,"RSI");
 
         return  strategyOne;
     }
