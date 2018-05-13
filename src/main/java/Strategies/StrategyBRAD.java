@@ -16,9 +16,12 @@ import org.ta4j.core.trading.rules.OverIndicatorRule;
 import ta.IndicatortoChart;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class StrategyBRAD extends StrategyBuilder {
+public class StrategyBRAD implements StrategyBuilder {
 
     private TimeSeries timeSeries;
     private ClosePriceIndicator closePrice;
@@ -149,5 +152,21 @@ public class StrategyBRAD extends StrategyBuilder {
 
         return strategyBRAD;
     }
+    public static Map<Strategy, String> buildStrategiesMap(TimeSeries series , int numberOfStrategy ,  int constant ) {
+        // Create a strategyList
+        ArrayList<StrategyBRAD> strategyList = new ArrayList<StrategyBRAD>();
+        // Create k Different Strategy
+        for (int i =1 ; i<numberOfStrategy ;i++){
+            StrategyBRAD strategyBRAD = new StrategyBRAD(series , "Strategy-"+i*constant); //Initialize strategy with series.
+            strategyBRAD.setRsiSlope(i*constant,0.1);                      //Set Parameter
+            strategyList.add(strategyBRAD);                                                // Add to Strategy List
+        }
+        HashMap<Strategy, String> strategies = new HashMap<>();         // Create HashMap for WalkForwar Class
+        for (StrategyBRAD sb : strategyList) {
+            strategies.put(sb.buildStrategy(), sb.getName());           // Build Strategy
+        }
+        return strategies;                                              // Return Strategy Map
+    }
+
 
 }

@@ -23,6 +23,9 @@ package Analyser;
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import Strategies.StrategyBuilder;
+import netscape.javascript.JSObject;
+import org.json.simple.JSONObject;
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.criteria.TotalProfitCriterion;
 import Strategies.StrategyBRAD;
@@ -146,55 +149,26 @@ public class WalkForward {
         return subseries;
     }
 
-    /**
-     * @param series the time series
-     * @return a map (key: strategy, value: name) of trading strategies
-     */
-    public static Map<Strategy, String> buildStrategiesMap(TimeSeries series) {
-        StrategyOne strategyOne = new StrategyOne(series , "RSI");
-
-        StrategyBRAD strategyBRAD3 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD3.setRsiSlope(5,0.1);
-        StrategyBRAD strategyBRAD5 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD5.setRsiSlope(10,0.1);
-        StrategyBRAD strategyBRAD7 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD7.setRsiSlope(15,0.1);
-        StrategyBRAD strategyBRAD11 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD11.setRsiSlope(20,0.1);
-        StrategyBRAD strategyBRAD13 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD13.setRsiSlope(25,0.1);
-        StrategyBRAD strategyBRAD17 = new StrategyBRAD(series , "Bollinger");
-        strategyBRAD17.setRsiSlope(30,0.1);
-        HashMap<Strategy, String> strategies = new HashMap<>();
-        strategies.put(strategyBRAD3.buildStrategy(), "Strategy BRAD 5");
-        strategies.put(strategyBRAD5.buildStrategy(), "Strategy BRAD 10");
-        strategies.put(strategyBRAD7.buildStrategy(), "Strategy BRAD 15");
-        strategies.put(strategyBRAD11.buildStrategy(), "Strategy BRAD 20");
-        strategies.put(strategyBRAD13.buildStrategy(), "Strategy BRAD 25");
-        strategies.put(strategyBRAD17.buildStrategy(), "Strategy BRAD 30");
-
-        strategies.put(strategyOne.buildStrategy(), "Strategy One");
-
-        return strategies;
-    }
 
     public static void main(String[] args) {
         // Splitting the series into slices
+        Map<String, Double> result = new HashMap<String, Double>();
+
         List<Bar> bar = new ArrayList<Bar>();
-        bar = CustomTick.historic_data("BIOCON","24month");    // Get Historic Data
+        bar = CustomTick.historic_data("tcs","24month");    // Get Historic Data
 
         TimeSeries series = new BaseTimeSeries("test_series",bar);
         List<TimeSeries> subseries = splitSeries(series, Duration.ofDays(30), Duration.ofDays(90));
 
         // Building the map of strategies
-        Map<Strategy, String> strategies = buildStrategiesMap(series);
+        Map<Strategy, String> strategies = StrategyBRAD.buildStrategiesMap(series,10 , 1);
 
         // The analysis criterion
         AnalysisCriterion profitCriterion = new TotalProfitCriterion();
-
+        System.out.println("Sub-series: " + "\t" + "Name" +"\t"+ "Profit");
         for (TimeSeries slice : subseries) {
             // For each sub-series...
-            System.out.println("Sub-series: " + slice.getSeriesPeriodDescription());
+            //System.out.println("Sub-series: " + slice.getSeriesPeriodDescription());
             TimeSeriesManager sliceManager = new TimeSeriesManager(slice);
             for (Map.Entry<Strategy, String> entry : strategies.entrySet()) {
                 Strategy strategy = entry.getKey();
@@ -202,13 +176,22 @@ public class WalkForward {
                 // For each strategy...
                 TradingRecord tradingRecord = sliceManager.run(strategy);
                 double profit = profitCriterion.calculate(slice, tradingRecord);
-                System.out.println("\tProfit for " + name + ": " + profit);
+                //System.out.println("\tProfit for " + name + ": " + profit);
+                System.out.println(slice.getSeriesPeriodDescription() + "\t" + name + "\t" + profit);
+                if ( result.containsKey(name) == false ) {
+                    result.put(name,Double.valueOf(0));
+                }
+
+                result.put(name,result.get(name)+Double.valueOf(profit));
+
             }
             Strategy bestStrategy = profitCriterion.chooseBest(sliceManager, new ArrayList<Strategy>(strategies.keySet()));
-            System.out.println("\t\t--> Best strategy: " + strategies.get(bestStrategy) + "\n");
+            System.out.println("\t\t--> Best strategy: " + strategies.get(bestStrategy)  +"\n");
 
 
         }
+        System.out.println("\t\t--> Result: " + result + "\n");
     }
 
 }
+

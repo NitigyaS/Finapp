@@ -34,7 +34,7 @@ import java.util.List;
      * https://github.com/team172011
  */
 
-public class StrategyOne extends StrategyBuilder {
+public class StrategyOne implements StrategyBuilder {
 
     private TimeSeries series;
 

@@ -13,11 +13,12 @@ package Strategies;
 import org.ta4j.core.*;
 import ta.IndicatortoChart;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public abstract class StrategyBuilder{
-
-    TimeSeries timeSeries;
+public interface StrategyBuilder{
 
     /**
      * initialize the strategy with default parameters
@@ -36,19 +37,12 @@ public abstract class StrategyBuilder{
      * Useful for Historical Analysis
      * @return results as a trading record
      */
-    public TradingRecord getTradingRecord(){
-        TimeSeriesManager seriesManager = new TimeSeriesManager(timeSeries);
-        return seriesManager.run(buildStrategy());
-    }
-
+    public TradingRecord getTradingRecord();
     /**
      * Get the current time series the strategy is initilized with
      * @return current time series the strategy is initilized with
      */
-    public TimeSeries getTimeSeries()
-    {
-        return this.timeSeries;
-    }
+    public TimeSeries getTimeSeries();
 
     /**
      * Get the name of the strategy
@@ -73,10 +67,15 @@ public abstract class StrategyBuilder{
      *              Candles
      *              LineGraph
      */
-    public void displayOnChart(){
-        IndicatortoChart inc = new IndicatortoChart(timeSeries);
-        inc.generateCandles(getName(),false);
-    }
+    public void displayOnChart();
+
+    /**
+     * Returns Strategy with different paramenters . for thw walk forward class.
+     * @param series Series on which the strategy would be analyesed
+     * @param numberOfStrategy Number Of Strategy to test.
+     * @return
+     */
+
 
 }
 

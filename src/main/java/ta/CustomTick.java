@@ -94,4 +94,62 @@ public class CustomTick {
 
     }
 
+
+    public static Bar getBar(String companyName ,int barIndex){
+
+        JSONParser parser = new JSONParser();
+
+        OkHttpClient client = new OkHttpClient();
+
+        try {
+
+            Request request = new Request.Builder()
+                    .url("http://localhost:8000/ticklist/"+companyName+"/exact/"+barIndex+"day")
+                    .get()
+                    .build();
+
+            Response response = client.newCall(request).execute();
+
+            String jsonString = response.body().string();                       // Convert Response String into Tick Object
+
+            JSONArray jsonArray = (JSONArray)parser.parse(jsonString);
+
+            NumberFormat format = NumberFormat.getInstance(Locale.US);
+
+
+            JSONObject jsonObject = (JSONObject) jsonArray.get(0);          //Create a Json Object
+            //System.out.println(jsonObject.toString());
+
+            Decimal openPrice =  Decimal.valueOf(format.parse(jsonObject.get("open_price").toString()).doubleValue());
+
+            Decimal closePrice =  Decimal.valueOf(format.parse(jsonObject.get("prev_close").toString()).doubleValue());
+
+            Decimal minPrice =  Decimal.valueOf(format.parse(jsonObject.get("low_price").toString()).doubleValue());
+
+            Decimal maxPrice =  Decimal.valueOf(format.parse(jsonObject.get("high_price").toString()).doubleValue());
+
+            Decimal volume =  Decimal.valueOf(format.parse(jsonObject.get("total_traded_quantity").toString()).doubleValue());
+
+            LocalDate date  = LocalDate.parse(jsonObject.get("date").toString(),DateTimeFormatter.ofPattern("yyyy-MM-d"));
+
+            ZonedDateTime time = date.atStartOfDay(ZoneId.systemDefault());
+
+            return  new BaseBar(time,openPrice, maxPrice, minPrice, closePrice,volume);
+
+        }catch (IOException iox){
+
+            System.out.print("IOException Received at CustomTick : " + iox);
+
+        }catch (java.text.ParseException px){
+
+            System.out.print("Text ParseException Received at CustomTick" + px);
+
+        }catch (ParseException px){
+
+            System.out.print("ParseException Received at CustomTick" + px);
+
+        }
+        return  null;
+    }
+
 }

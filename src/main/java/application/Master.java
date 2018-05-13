@@ -16,17 +16,17 @@ import java.util.concurrent.Future;
  */
 public class Master {
     // List of Stocks to Analyse
-    final  static String[] symbolList = new String[]{"TCS","ADANIPORTS","ASIANPAINT"};
+    final  static String[] symbolList = new String[]{"TCS"};
     // Methods start slaves for each stock
     public void startSlave(){
-        List<Future<StrategyBuilder>> futureList = new ArrayList<Future<StrategyBuilder>>();
+        //List<Future<Void>> futureList = new ArrayList<Future<Void>>();
         // Maximum thread to run at a time.
         ExecutorService executorPool = Executors.newFixedThreadPool(10);
 
         // Create Slaves Threads
         for (int id =0; id<symbolList.length ; id++){
-            Future<StrategyBuilder> future = executorPool.submit(new Slave(id));
-            futureList.add(future);
+            Future<Void> future = executorPool.submit(new Slave(id));
+            //futureList.add(future);
 
         }
 
@@ -34,21 +34,21 @@ public class Master {
         // Wait for Threads to complete
         // This code needs to be fixed
         try {
-            Thread.sleep(10000);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         // Display Result of all calculations // This can be run in loop if slaves keep on changing there ouptut
-        for (int j = 0 ; j<symbolList.length ; j++){
+/*        for (int j = 0 ; j<symbolList.length ; j++){
                 System.out.println("Till Now We Got Following Proposal : ");
-                for (StrategyBuilder prp : Slave.proposalList) {
-                    //System.out.print(prp.getName() + " , ");
-                    new BackTestAnalyser().printAllResults((StrategyOne)prp);
+                for (int k =0 ; k <symbolList.length ;k++)  {
+                    System.out.println (symbolList[k]+" : "+ Slave.proposalList[k]);
+
                 }
                 System.out.println("");
 
-        }
+        }*/
 
     }
 
