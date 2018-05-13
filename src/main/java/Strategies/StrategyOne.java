@@ -12,7 +12,6 @@ package Strategies;
 import org.ta4j.core.*;
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.SMAIndicator;
-import org.ta4j.core.indicators.*;
 import org.ta4j.core.indicators.bollinger.BollingerBandWidthIndicator;
 import org.ta4j.core.indicators.bollinger.BollingerBandsLowerIndicator;
 import org.ta4j.core.indicators.bollinger.BollingerBandsMiddleIndicator;
@@ -49,15 +48,15 @@ public class StrategyOne implements StrategyBuilder {
     // indicators
     RSIIndicator rsi;
     SMAIndicator sma;
-    RSIIndicator smrsi;
     BollingerBandsMiddleIndicator bolm;
     BollingerBandsUpperIndicator bolu;
     BollingerBandsLowerIndicator boll;
     BollingerBandWidthIndicator bolbw;
+    private String name;
 
 
-
-    public StrategyOne(TimeSeries series){
+    public StrategyOne(TimeSeries series , String name){
+        this.name = name;
         initStrategy(series);
     }
 
@@ -69,7 +68,7 @@ public class StrategyOne implements StrategyBuilder {
         this.takeProfitValue = Decimal.valueOf(takeProfitValue);
     }
 
-    @Override
+
     public void initStrategy(TimeSeries series) {
         this.series = series;
         this.closePrice = new ClosePriceIndicator(this.series);
@@ -96,7 +95,7 @@ public class StrategyOne implements StrategyBuilder {
 
     @Override
     public String getName() {
-        return "StrategyOne";
+        return name;
     }
 
     @Override
