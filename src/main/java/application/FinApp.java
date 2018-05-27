@@ -2,8 +2,10 @@ package application;
 
 
 import constant.ApplicationProperties;
+import dao.TradingRecordDao;
 import data.Order;
 import dao.OrderDao;
+import data.TradingRecord;
 
 /**
  * Created by nitigyas on 17/9/17.
@@ -18,13 +20,10 @@ public class FinApp {
         //m.startSlave(); 1
         //CustomTick.historic_data();
         try{
-            Order order = new Order("tcs",78.5,100);
-            order.setOrder_history_id(2);
-            OrderDao od = new OrderDao();
-            od.updateOrder(order);
-
-            //Master m = new Master();
-            //m.startSlave();
+            //OrderDao orderDao = new OrderDao();
+            //orderDao.getOrder(29);
+            Master m = new Master();
+            m.startSlave();
             //CustomTick.historic_data();
             //new StockAnalyser().backTest();
 

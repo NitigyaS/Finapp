@@ -5,34 +5,38 @@ import data.Order;
 import java.sql.*;
 
 public class OrderDao {
+    Database database;
+    public OrderDao(){
+        database = new Database();
+    }
 
 
-    private Order extractOrderFromResultSet(ResultSet rs) throws SQLException {
+    private Order extractOrderFromResultSet(ResultSet resultSet) throws SQLException {
         Order order = new Order();
-        order.setOrder_history_id(rs.getInt("order_history_id"));
-        order.setExchange(rs.getString("exchange"));
-        order.setOrder_history_id(rs.getInt("token"));
-        order.setExchange(rs.getString("symbol"));
-        order.setExchange(rs.getString("product"));
-        order.setExchange(rs.getString("order_type"));
-        order.setExchange(rs.getString("duration"));
-        order.setAverage_price(rs.getDouble("price"));
-        order.setAverage_price(rs.getDouble("trigger_price"));
-        order.setOrder_history_id(rs.getInt("quantity"));
-        order.setOrder_history_id(rs.getInt("disclosed_quantity"));
-        order.setExchange(rs.getString("transaction_type"));
-        order.setAverage_price(rs.getDouble("average_price"));
-        order.setOrder_history_id(rs.getInt("traded_quantity"));
-        order.setExchange(rs.getString("message"));
-        order.setExchange(rs.getString("exchange_order_id"));
-        order.setExchange(rs.getString("parent_order_id"));
-        order.setExchange(rs.getString("order_id"));
-        order.setExchange(rs.getString("exchange_time"));
-        order.setExchange(rs.getString("time_in_micro"));
-        order.setExchange(rs.getString("status"));
-        order.setExchange(rs.getString("is_amo"));
-        order.setExchange(rs.getString("valid_date"));
-        order.setExchange(rs.getString("order_request_id"));
+        order.setOrder_history_id(resultSet.getInt("order_history_id"));
+        order.setExchange(resultSet.getString("exchange"));
+        order.setToken(resultSet.getInt("token"));
+        order.setSymbol(resultSet.getString("symbol"));
+        order.setProduct(resultSet.getString("product"));
+        order.setOrder_type(resultSet.getString("order_type"));
+        order.setDuration(resultSet.getString("duration"));
+        order.setPrice(resultSet.getDouble("price"));
+        order.setTrigger_price(resultSet.getDouble("trigger_price"));
+        order.setQuantity(resultSet.getInt("quantity"));
+        order.setDisclosed_quantity(resultSet.getInt("disclosed_quantity"));
+        order.setTransaction_type(resultSet.getString("transaction_type"));
+        order.setAverage_price(resultSet.getDouble("average_price"));
+        order.setTraded_quantity(resultSet.getInt("traded_quantity"));
+        order.setMessage(resultSet.getString("message"));
+        order.setExchange_order_id(resultSet.getString("exchange_order_id"));
+        order.setParent_order_id(resultSet.getString("parent_order_id"));
+        order.setOrder_id(resultSet.getString("order_id"));
+        order.setExchange_time(resultSet.getDate("exchange_time"));
+        order.setTime_in_micro(resultSet.getDate("time_in_micro"));
+        order.setStatus(resultSet.getString("status"));
+        order.setIs_amo(resultSet.getBoolean("is_amo"));
+        order.setValid_date(resultSet.getDate("valid_date"));
+        order.setOrder_request_id(resultSet.getString("order_request_id"));
 
 
         return order;
@@ -43,15 +47,15 @@ public class OrderDao {
      * @param order_history_id
      * @return Order
      */
-    Order getOrder(int order_history_id){
-        Database database = new Database();
+    public Order getOrder(int order_history_id){
+
         Connection connection  =  database.getConnection();
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM order_history WHERE order_history_id=" + order_history_id);
-            if(rs.next())
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM order_history WHERE order_history_id = " + order_history_id);
+            if(resultSet.next())
             {
-                return extractOrderFromResultSet(rs);
+                return extractOrderFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
             System.err.println("Error in OrderDao.getOrder");
@@ -68,15 +72,18 @@ public class OrderDao {
      * @return
      */
     public boolean updateOrder(int order_history_id ,Order updatedOrder){
-        Database database = new Database();
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
+            connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement( "INSERT INTO `finapp`.`order_history` ( `exchange`, `token`, `symbol`, `product`, `order_type`, `duration`, `price`, `trigger_price`, `quantity`, `disclosed_quantity`, `transaction_type`, `average_price`, `traded_quantity`, `message`, `exchange_order_id`, `parent_order_id`, `order_id`, `exchange_time`, `time_in_micro`, `status`, `is_amo`, `valid_date`, `order_request_id`  ,`order_history_id`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);\n");
             preparedStatement = createPreparedStatementforOrder(preparedStatement , updatedOrder);
             preparedStatement.setInt(24,order_history_id);
 
             int i = preparedStatement.executeUpdate();
             if(i == 1) {
+                connection.commit();
+//                connection.close();
                 return true;
             }
 
@@ -92,22 +99,26 @@ public class OrderDao {
      * @param order
      * @return boolean
      */
-    public boolean insertOrder(Order order) {
-        Database database = new Database();
+    public int insertOrder(Order order) {
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement( "INSERT INTO `finapp`.`order_history` ( `exchange`, `token`, `symbol`, `product`, `order_type`, `duration`, `price`, `trigger_price`, `quantity`, `disclosed_quantity`, `transaction_type`, `average_price`, `traded_quantity`, `message`, `exchange_order_id`, `parent_order_id`, `order_id`, `exchange_time`, `time_in_micro`, `status`, `is_amo`, `valid_date`, `order_request_id`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n");
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement( "INSERT INTO `finapp`.`order_history` ( `exchange`, `token`, `symbol`, `product`, `order_type`, `duration`, `price`, `trigger_price`, `quantity`, `disclosed_quantity`, `transaction_type`, `average_price`, `traded_quantity`, `message`, `exchange_order_id`, `parent_order_id`, `order_id`, `exchange_time`, `time_in_micro`, `status`, `is_amo`, `valid_date`, `order_request_id`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n" ,Statement.RETURN_GENERATED_KEYS);
             preparedStatement = createPreparedStatementforOrder(preparedStatement , order);
 
-            int i = preparedStatement.executeUpdate();
-            if (i == 1) {
-                return true;
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                connection.commit();
+                return resultSet.getInt(1);
+
             }
         } catch (SQLException ex) {
             System.err.println("Error in OrderDao.insertOrder");
             ex.printStackTrace();
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -116,12 +127,14 @@ public class OrderDao {
      * @return boolean
      */
     public boolean deleteOrder(int order_history_id){
-        Database database = new Database();
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
+            connection.setAutoCommit(false);
             Statement stmt = connection.createStatement();
             int i = stmt.executeUpdate("DELETE FROM order_history WHERE order_history_id=" + order_history_id);
             if(i == 1) {
+                connection.commit();
                 return true;
             }
         } catch (SQLException ex) {

@@ -8,15 +8,17 @@ public class TradingRecord {
     public TradingRecord() {
     }
 
-    public TradingRecord(Integer trading_record_id, Integer order_history_id) {
-        this.trading_record_id = trading_record_id;
+    public TradingRecord(Integer order_history_id) {
         this.order_history_id = order_history_id;
     }
 
+    /**
+     *
+     * @param order_history_id
+     * @param dynamic_stop_loss
+     */
+    public TradingRecord( Integer order_history_id, Double dynamic_stop_loss) {
 
-    public TradingRecord(Integer trading_record_id, Integer order_history_id, Double dynamic_stop_loss) {
-
-        this.trading_record_id = trading_record_id;
         this.order_history_id = order_history_id;
         this.dynamic_stop_loss = dynamic_stop_loss;
     }

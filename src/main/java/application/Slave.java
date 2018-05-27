@@ -3,6 +3,7 @@ package application;
 import Strategies.StrategyBRAD;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
+import dao.TradingRecordDao;
 import org.ta4j.core.*;
 import ta.CustomTick;
 
@@ -42,8 +43,8 @@ public class Slave implements Callable<Void> {
         for ( ; series.getBarCount() < maximum_bar_count; i++){
             series.addBar(CustomTick.getBar(stock_name,i));
         }
-
-        TradingRecord tradingRecord = new BaseTradingRecord();
+        TradingRecordDao tradingRecordDao = new TradingRecordDao();
+        //TradingRecord tradingRecord = new BaseTradingRecord();
         Strategy strategy = new StrategyBRAD(series,Integer.valueOf(stock_id).toString()).buildStrategy();
 
         for ( ; i < 200; i++){
@@ -63,22 +64,27 @@ public class Slave implements Callable<Void> {
             if (strategy.shouldEnter(endIndex)) {
                 // Our strategy should enter
                 System.out.println("Strategy should ENTER on " + endIndex);
-                boolean entered = tradingRecord.enter(endIndex, newBar.getClosePrice(), Decimal.TEN);
-                if (entered) {
-                    Order entry = tradingRecord.getLastEntry();
-                    System.out.println("Entered on " + entry.getIndex()
-                            + " (price=" + entry.getPrice().doubleValue()
-                            + ", amount=" + entry.getAmount().doubleValue() + ")");
+                data.Order entryOrder = new data.Order(stock_name , newBar.getClosePrice().doubleValue() ,10);
+                entryOrder.setTransaction_type("B");
+                int entered = tradingRecordDao.enter( entryOrder , newBar.getClosePrice().doubleValue()*0.95 );
+                //boolean entered = tradingRecord.enter(endIndex, newBar.getClosePrice(), Decimal.TEN);
+                if (entered != 0) {
+                    //data.Order entry = tradingRecordDao.getEntry(entered);
+                    System.out.println("Entered on " + entryOrder.getSymbol()
+                            + " (price=" + entryOrder.getPrice().doubleValue()
+                            + ", amount=" + entryOrder.getQuantity().doubleValue() + ")");
                 }
             } else if (strategy.shouldExit(endIndex)) {
                 // Our strategy should exit
                 System.out.println("Strategy should EXIT on " + endIndex);
-                boolean exited = tradingRecord.exit(endIndex, newBar.getClosePrice(), Decimal.TEN);
+                data.Order exitOrder =new data.Order(stock_name , newBar.getClosePrice().doubleValue() ,10);
+                exitOrder.setTransaction_type("S");
+                boolean exited = tradingRecordDao.exit(exitOrder);
                 if (exited) {
-                    Order exit = tradingRecord.getLastExit();
-                    System.out.println("Exited on " + exit.getIndex()
-                            + " (price=" + exit.getPrice().doubleValue()
-                            + ", amount=" + exit.getAmount().doubleValue() + ")");
+                    //tradingRecordDao.getExit(exited);
+                    System.out.println("Exited on " + exitOrder.getSymbol()
+                            + " (price=" + exitOrder.getPrice().doubleValue()
+                            + ", amount=" + exitOrder.getQuantity().doubleValue() + ")");
                 }
             }
 

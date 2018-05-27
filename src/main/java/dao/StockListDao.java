@@ -7,10 +7,16 @@ import java.sql.*;
 
 public class StockListDao {
 
-    private Stock extractStockFromResultSet(ResultSet rs) throws SQLException {
+    Database database ;
+
+    public StockListDao(){
+        database = new Database();
+    }
+
+    private Stock extractStockFromResultSet(ResultSet resultSet) throws SQLException {
         Stock stock = new Stock();
-        stock.setId(rs.getInt("stock_list_id"));
-        stock.setSymbol(rs.getString("stock_symbol"));
+        stock.setId(resultSet.getInt("stock_list_id"));
+        stock.setSymbol(resultSet.getString("stock_symbol"));
         return stock;
     }
 
@@ -33,17 +39,17 @@ public class StockListDao {
      * @return Stock
      */
     public Stock getStock(int stock_list_id){
-        Database database = new Database();
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM stock_list WHERE stock_list_id=" + stock_list_id);
-            if(rs.next())
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM stock_list WHERE stock_list_id=" + stock_list_id);
+            if(resultSet.next())
             {
-                return extractStockFromResultSet(rs);
+                return extractStockFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            System.err.println("Error in OrderDao.getOrder");
+            System.err.println("Error in StockListDao.getStock");
             ex.printStackTrace();
         }
 
@@ -56,7 +62,7 @@ public class StockListDao {
      * @return Boolean
      */
     public Boolean insertStock(Stock stock){
-        Database database = new Database();
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement( "INSERT INTO `finapp`.`stock_list` ( `stock_list_id`,  `stock_symbol`) VALUES ( ?, ?);\n");
@@ -80,7 +86,7 @@ public class StockListDao {
      * @return Boolean
      */
     public Boolean deleteStock(int stock_list_id){
-        Database database = new Database();
+//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
             Statement stmt = connection.createStatement();
@@ -89,7 +95,7 @@ public class StockListDao {
                 return true;
             }
         } catch (SQLException ex) {
-            System.err.println("Error in OrderDao.deleteOrder");
+            System.err.println("Error in StockListDao.deleteStock");
             ex.printStackTrace();
         }
         return false;
