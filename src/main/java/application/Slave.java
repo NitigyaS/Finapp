@@ -62,12 +62,19 @@ public class Slave implements Callable<Void> {
             int endIndex = series.getEndIndex();
             if (strategy.shouldEnter(endIndex)) {
                 // Our strategy should enter
+
                 System.out.println("Strategy should ENTER on " + endIndex);
+
                 boolean entered = tradingRecord.enter(endIndex, newBar.getClosePrice(), Decimal.TEN);
+
                 if (entered) {
+
                     Order entry = tradingRecord.getLastEntry();
+
                     System.out.println("Entered on " + entry.getIndex()
+
                             + " (price=" + entry.getPrice().doubleValue()
+
                             + ", amount=" + entry.getAmount().doubleValue() + ")");
                 }
             } else if (strategy.shouldExit(endIndex)) {
