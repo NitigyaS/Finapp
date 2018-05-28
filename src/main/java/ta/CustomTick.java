@@ -1,4 +1,6 @@
 package ta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.BaseBar;
 import org.ta4j.core.BaseTradingRecord;
 import org.ta4j.core.Decimal;
@@ -31,6 +33,8 @@ import java.util.Locale;
 
 
 public class CustomTick {
+
+    private static Logger logger = LoggerFactory.getLogger(CustomTick.class);
 
     public static ArrayList<Bar> historic_data(String companyName , String dateRange){
 
@@ -78,15 +82,15 @@ public class CustomTick {
 
         }catch (IOException iox){
 
-            System.out.print("IOException Received at CustomTick : " + iox);
+            logger.error(iox.toString());
 
         }catch (java.text.ParseException px){
 
-            System.out.print("Text ParseException Received at CustomTick" + px);
+            logger.error(px.toString());
 
         }catch (ParseException px){
 
-            System.out.print("ParseException Received at CustomTick" + px);
+            logger.error(px.toString());
 
         }
 
@@ -138,15 +142,15 @@ public class CustomTick {
 
         }catch (IOException iox){
 
-            System.out.print("IOException Received at CustomTick : " + iox);
+            logger.error(iox.toString());
 
         }catch (java.text.ParseException px){
 
-            System.out.print("Text ParseException Received at CustomTick" + px);
+            logger.error(px.toString());
 
         }catch (ParseException px){
 
-            System.out.print("ParseException Received at CustomTick" + px);
+            logger.error(px.toString());
 
         }
         return  null;

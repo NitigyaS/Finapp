@@ -1,4 +1,4 @@
-package constant;
+package custom;
 
 /**
  * Created by niitgyas on 17/9/17.
@@ -17,6 +17,9 @@ public class ApplicationProperties {
     public static String AUTHOR;
     public static String COMPANY;
     public static int MAXTHREAD;
+    public static String DATABASE_URL;
+    public static String DATABASE_USER;
+    public static String DATABASE_PASSWORD;
     private Properties appProperties;
     private static final String propertiesFile = "config.properties";
     final static Logger logger = Logger.getLogger("Properties");
@@ -30,6 +33,9 @@ public class ApplicationProperties {
                 AUTHOR = appProperties.getProperty("author");
                 COMPANY = appProperties.getProperty("company");
                 MAXTHREAD = Integer.parseInt(appProperties.getProperty("maxthread"));
+                DATABASE_URL = appProperties.getProperty("database_url");
+                DATABASE_USER = appProperties.getProperty("database_user");
+                DATABASE_PASSWORD = appProperties.getProperty("database_password");
                 logger.log(Level.ALL,"This is configured : " + AUTHOR + COMPANY);
 
             } else {

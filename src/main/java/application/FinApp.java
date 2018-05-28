@@ -1,8 +1,7 @@
 package application;
 
 
-import constant.ApplicationProperties;
-import Analyser.StockAnalyser;
+import custom.ApplicationProperties;
 
 /**
  * Created by nitigyas on 17/9/17.
@@ -17,6 +16,8 @@ public class FinApp {
         //m.startSlave(); 1
         //CustomTick.historic_data();
         try{
+            //OrderDao orderDao = new OrderDao();
+            //orderDao.getOrder(29);
             Master m = new Master();
             m.startSlave();
             //CustomTick.historic_data();

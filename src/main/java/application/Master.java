@@ -39,16 +39,6 @@ public class Master {
             e.printStackTrace();
         }
 
-        // Display Result of all calculations // This can be run in loop if slaves keep on changing there ouptut
-/*        for (int j = 0 ; j<symbolList.length ; j++){
-                System.out.println("Till Now We Got Following Proposal : ");
-                for (int k =0 ; k <symbolList.length ;k++)  {
-                    System.out.println (symbolList[k]+" : "+ Slave.proposalList[k]);
-
-                }
-                System.out.println("");
-
-        }*/
 
     }
 
