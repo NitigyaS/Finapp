@@ -1,11 +1,7 @@
 package application;
 
 
-import constant.ApplicationProperties;
-import dao.TradingRecordDao;
-import data.Order;
-import dao.OrderDao;
-import data.TradingRecord;
+import custom.ApplicationProperties;
 
 /**
  * Created by nitigyas on 17/9/17.

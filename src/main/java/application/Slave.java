@@ -4,11 +4,14 @@ import Strategies.StrategyBRAD;
 import Strategies.StrategyBuilder;
 import Strategies.StrategyOne;
 import dao.TradingRecordDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ta4j.core.*;
 import ta.CustomTick;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 
 /**
  * Created by nitigyas on 17/9/17.
@@ -16,9 +19,11 @@ import java.util.concurrent.Callable;
  */
 public class Slave implements Callable<Void> {
 
+    private static Logger logger = LoggerFactory.getLogger(Slave.class);
     int stock_id;
     String stock_name;
     int maximum_bar_count = 50;
+
     public static boolean proposalList[] = new boolean[Master.symbolList.length];   //Should Trade or not.
 
     /**
@@ -26,6 +31,7 @@ public class Slave implements Callable<Void> {
      * @param stock_id "Passs the Stock Number to be monitored."
      */
     public Slave(int stock_id) {
+
 
         this.stock_id = stock_id;
         this.stock_name = Master.symbolList[stock_id];
@@ -63,26 +69,26 @@ public class Slave implements Callable<Void> {
             int endIndex = series.getEndIndex();
             if (strategy.shouldEnter(endIndex)) {
                 // Our strategy should enter
-                System.out.println("Strategy should ENTER on " + endIndex);
+                logger.debug("Strategy.shouldEnter True at " + endIndex);
                 data.Order entryOrder = new data.Order(stock_name , newBar.getClosePrice().doubleValue() ,10);
                 entryOrder.setTransaction_type("B");
                 int entered = tradingRecordDao.enter( entryOrder , newBar.getClosePrice().doubleValue()*0.95 );
                 //boolean entered = tradingRecord.enter(endIndex, newBar.getClosePrice(), Decimal.TEN);
                 if (entered != 0) {
                     //data.Order entry = tradingRecordDao.getEntry(entered);
-                    System.out.println("Entered on " + entryOrder.getSymbol()
+                    logger.info("Entered on " + entryOrder.getSymbol()
                             + " (price=" + entryOrder.getPrice().doubleValue()
                             + ", amount=" + entryOrder.getQuantity().doubleValue() + ")");
                 }
             } else if (strategy.shouldExit(endIndex)) {
                 // Our strategy should exit
-                System.out.println("Strategy should EXIT on " + endIndex);
+                logger.debug("Strategy.shouldExit True at " + endIndex);
                 data.Order exitOrder =new data.Order(stock_name , newBar.getClosePrice().doubleValue() ,10);
                 exitOrder.setTransaction_type("S");
                 boolean exited = tradingRecordDao.exit(exitOrder);
                 if (exited) {
                     //tradingRecordDao.getExit(exited);
-                    System.out.println("Exited on " + exitOrder.getSymbol()
+                    logger.info("Exited on " + exitOrder.getSymbol()
                             + " (price=" + exitOrder.getPrice().doubleValue()
                             + ", amount=" + exitOrder.getQuantity().doubleValue() + ")");
                 }

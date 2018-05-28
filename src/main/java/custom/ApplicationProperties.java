@@ -1,4 +1,4 @@
-package constant;
+package custom;
 
 /**
  * Created by niitgyas on 17/9/17.

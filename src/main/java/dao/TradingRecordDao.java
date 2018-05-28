@@ -1,9 +1,12 @@
 package dao;
 
+import application.Slave;
 import com.sun.tools.corba.se.idl.constExpr.Or;
 import data.Order;
 import data.Stock;
 import data.TradingRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.crypto.Data;
 import java.sql.*;
@@ -11,6 +14,8 @@ import java.sql.*;
 public class TradingRecordDao {
 
     Database database;
+
+    private static Logger logger = LoggerFactory.getLogger(TradingRecordDao.class);
 
     public TradingRecordDao(){
         database = new Database();
@@ -55,8 +60,7 @@ public class TradingRecordDao {
                 return extractTradingRecordFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            System.err.println("Error in TradingRecord.getTradingRecordById");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return null;
@@ -73,8 +77,7 @@ public class TradingRecordDao {
                 return extractTradingRecordFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            System.err.println("Error in TradingRecord.getTradingRecordBySymbol");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return null;
@@ -101,12 +104,13 @@ public class TradingRecordDao {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
-
-                return resultSet.getInt(1);
+                int trading_record_id = resultSet.getInt(1);
+                logger.debug("Trading Record Inserted at id " + trading_record_id);
+                return trading_record_id;
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return 0;
@@ -124,7 +128,7 @@ public class TradingRecordDao {
         try {
             //connection.setAutoCommit(false);
             Statement stmt = connection.createStatement();
-            System.out.println("Deleting trading_record " + trading_record_id);
+            logger.debug("Deleting trading_record " + trading_record_id);
             int i = stmt.executeUpdate("DELETE FROM trading_records WHERE trading_record_id =" + trading_record_id );
             if(i == 1) {
                 //onnection.commit();
@@ -132,8 +136,7 @@ public class TradingRecordDao {
                 return true;
             }
         } catch (SQLException ex) {
-            System.err.println("Error in TradingRecord.deleteTradingRecord");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
         return false;
     }
@@ -150,12 +153,11 @@ public class TradingRecordDao {
             int i = preparedStatement.executeUpdate();
             if(i == 1) {
                 connection.commit();
- //               connection.close();
                 return true;
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return false;
@@ -169,13 +171,13 @@ public class TradingRecordDao {
     public boolean canEnter(Order order){
         if (getTradingRecordBySymbol(order.getSymbol()) == null){
             if ( order.getTransaction_type() == "S" ){
-                System.out.println("Can not Enter Because Transaction Type is " + order.getTransaction_type());
+                logger.debug("Can not Enter :: Transaction Type is " + order.getTransaction_type());
                 return false;
             }
-            System.out.println("Can Enter ");
+            logger.debug("Can Enter : True ");
             return true;    // Can enter because it is there is no trading record for this stock.
         } else {
-            System.out.println("Can not Enter Because Record Already exists.  ");
+            logger.debug("Can not Enter :: Record Already exists.  ");
             return  false;  // Can not enter because there is a trading record for this stock.
         }
 
@@ -199,12 +201,13 @@ public class TradingRecordDao {
     public boolean canExit(Order order){
         if (getTradingRecordBySymbol(order.getSymbol()) == null){
             if ( order.getTransaction_type() == "B" ){
-                System.out.println("Can not Exit Because Transaction Type is " + order.getTransaction_type());
+                logger.debug("Can not Exit :: Transaction Type is " + order.getTransaction_type());
                 return false;
             }
-            System.out.println("Can not Exit Because No Record with symbol exists.");
+            logger.debug("Can not Exit :: No record with symbol exists.");
             return false;    // Can not Exit because it is there is no trading record for this stock.
         } else {
+
             return  true;  // Can exit because there is a trading record for this stock.
         }
     }

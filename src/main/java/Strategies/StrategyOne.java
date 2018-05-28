@@ -39,8 +39,6 @@ public class StrategyOne implements StrategyBuilder {
     private TimeSeries series;
 
     private ClosePriceIndicator closePrice;
-    private Indicator<Decimal> maxPrice;
-    private Indicator<Decimal> minPrice;
     private int timeFrame = 14;
     private Decimal takeProfitValue = Decimal.valueOf(111.78);
 

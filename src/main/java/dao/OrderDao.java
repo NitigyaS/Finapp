@@ -1,11 +1,16 @@
 package dao;
 
+import com.sun.tools.corba.se.idl.constExpr.Or;
 import data.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class OrderDao {
     Database database;
+
+    private static Logger logger = LoggerFactory.getLogger(Order.class);
     public OrderDao(){
         database = new Database();
     }
@@ -58,8 +63,7 @@ public class OrderDao {
                 return extractOrderFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            System.err.println("Error in OrderDao.getOrder");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return null;
@@ -88,7 +92,7 @@ public class OrderDao {
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return false;
@@ -111,12 +115,13 @@ public class OrderDao {
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
                 connection.commit();
-                return resultSet.getInt(1);
+                int order_id = resultSet.getInt(1);
+                logger.debug("Order inserted at id " + order_id);
+                return order_id;
 
             }
         } catch (SQLException ex) {
-            System.err.println("Error in OrderDao.insertOrder");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
         return 0;
     }
@@ -138,8 +143,7 @@ public class OrderDao {
                 return true;
             }
         } catch (SQLException ex) {
-            System.err.println("Error in OrderDao.deleteOrder");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
         return false;
     }

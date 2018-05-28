@@ -1,13 +1,18 @@
 package dao;
 
+import application.Slave;
 import data.Order;
 import data.Stock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class StockListDao {
 
     Database database ;
+
+    private static Logger logger = LoggerFactory.getLogger(StockListDao.class);
 
     public StockListDao(){
         database = new Database();
@@ -39,7 +44,6 @@ public class StockListDao {
      * @return Stock
      */
     public Stock getStock(int stock_list_id){
-//        Database database = new Database();
         Connection connection  =  database.getConnection();
         try {
             Statement stmt = connection.createStatement();
@@ -49,8 +53,7 @@ public class StockListDao {
                 return extractStockFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
-            System.err.println("Error in StockListDao.getStock");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return null;
@@ -74,7 +77,7 @@ public class StockListDao {
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
 
         return false;
@@ -95,8 +98,7 @@ public class StockListDao {
                 return true;
             }
         } catch (SQLException ex) {
-            System.err.println("Error in StockListDao.deleteStock");
-            ex.printStackTrace();
+            logger.error(ex.toString());
         }
         return false;
     }
