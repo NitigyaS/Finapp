@@ -152,16 +152,24 @@ public class StrategyBRAD implements StrategyBuilder {
 
         return strategyBRAD;
     }
-    public static Map<Strategy, String> buildStrategiesMap(TimeSeries series , int numberOfStrategy ,  int constant ) {
+
+    /**
+     *
+     * @param series
+     * @param numberOfStrategy
+     * @param rsiSlopeVariation
+     * @return
+     */
+    public static Map<Strategy, String> buildStrategiesMap(TimeSeries series , int numberOfStrategy ,  int rsiSlopeVariation ) {
         // Create a strategyList
         ArrayList<StrategyBRAD> strategyList = new ArrayList<StrategyBRAD>();
         // Create k Different Strategy
         for (int i =1 ; i<numberOfStrategy ;i++){
-            StrategyBRAD strategyBRAD = new StrategyBRAD(series , "Strategy-"+i*constant); //Initialize strategy with series.
-            strategyBRAD.setRsiSlope(i*constant,0.1);                      //Set Parameter
+            StrategyBRAD strategyBRAD = new StrategyBRAD(series , "Strategy-"+i*rsiSlopeVariation); //Initialize strategy with series.
+            strategyBRAD.setRsiSlope(i*rsiSlopeVariation,0.1);                      //Set Parameter
             strategyList.add(strategyBRAD);                                                // Add to Strategy List
         }
-        HashMap<Strategy, String> strategies = new HashMap<>();         // Create HashMap for WalkForwar Class
+        HashMap<Strategy, String> strategies = new HashMap<>();         // Create HashMap for WalkForward Class
         for (StrategyBRAD sb : strategyList) {
             strategies.put(sb.buildStrategy(), sb.getName());           // Build Strategy
         }
