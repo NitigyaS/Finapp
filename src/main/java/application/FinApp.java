@@ -11,7 +11,7 @@ public class FinApp {
     public static void main(String args[]){
         System.out.println("This is the entry point of Application!!");
         ApplicationProperties applicationProperties = new ApplicationProperties();
-        System.out.println("Config File Properties : " + applicationProperties.AUTHOR + " , " + applicationProperties.COMPANY);
+        System.out.println("Config File Properties : " + ApplicationProperties.AUTHOR + " , " + ApplicationProperties.COMPANY);
         //Master m = new Master();
         //m.startSlave(); 1
         //CustomTick.historic_data();

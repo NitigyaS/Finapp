@@ -220,8 +220,8 @@ public class WalkForward {
             System.out.println("Total Profit of :" + totalBestProfit.get(value));
             System.out.println("Count Best Strategy :" + bestStrategyCount.get(value));
             System.out.println("Total Maximum Profit :" + totalMaxProfit.get(value));
-            System.out.println("Average Best Profit Per Trade :" + totalBestProfit.get(value)/bestStrategyCount.get(value));
-            System.out.println("Average Max Profit Per Trade :" + totalMaxProfit.get(value)/totalMaxProfit.size() +"\n");
+            System.out.println("Average Best Profit Per Trade :" + totalBestProfit.get(value) / bestStrategyCount.get(value));
+            System.out.println("Average Max Profit Per Trade :" + totalMaxProfit.get(value) / totalMaxProfit.size() +"\n");
         }
 
 

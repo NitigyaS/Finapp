@@ -24,38 +24,38 @@ public interface StrategyBuilder{
      * initialize the strategy with default parameters
      * @param series the time serie to initilize the strategy with
      */
-    abstract void initStrategy(TimeSeries series);
+    void initStrategy(TimeSeries series);
 
     /**
      * Create and get a long or short strategy.Also need to create private methods for Long/Short Strategy.
      * @return a strategy (long) corresponding to the order type, null if order type is not supported
      */
-    abstract  Strategy buildStrategy();
+    Strategy buildStrategy();
 
     /**
      * Runs the strategy on the time series it is initialized with
      * Useful for Historical Analysis
      * @return results as a trading record
      */
-    public TradingRecord getTradingRecord();
+    TradingRecord getTradingRecord();
     /**
      * Get the current time series the strategy is initilized with
      * @return current time series the strategy is initilized with
      */
-    public TimeSeries getTimeSeries();
+    TimeSeries getTimeSeries();
 
     /**
      * Get the name of the strategy
      * @return name of the strategy
      */
-    public abstract String getName();
+    String getName();
 
     /**
      * Get the parameters of the strategy
      * @return a list of parameters of the strategy
      *
      */
-    public abstract List<String> getParamters();
+    List<String> getParamters();
 
     /**
      * Display Strategy on Chart
@@ -67,7 +67,7 @@ public interface StrategyBuilder{
      *              Candles
      *              LineGraph
      */
-    public void displayOnChart();
+    void displayOnChart();
 
     /**
      * Returns Strategy with different paramenters . for thw walk forward class.

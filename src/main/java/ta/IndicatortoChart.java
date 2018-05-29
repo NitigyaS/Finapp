@@ -57,7 +57,7 @@ public class IndicatortoChart {
         );
 
 
-        XYPlot plot = (XYPlot) chart.getXYPlot();
+        XYPlot plot = chart.getXYPlot();
         plot.setRangeGridlinePaint(Color.lightGray);
         plot.setBackgroundPaint(Color.white);
 
