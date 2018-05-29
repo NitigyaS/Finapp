@@ -71,7 +71,6 @@
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocMethod"/>
         <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
         <module name="JavadocStyle"/>
 
         <!-- Checks for Naming Conventions.                  -->
@@ -151,7 +150,7 @@
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock"/>
         <module name="LeftCurly">
-            <property name="option" value="nl"/>
+            <property name="option" value="eol"/>
         </module>
         <module name="NeedBraces">
             <property name="allowSingleLineStatement" value="false"/>
