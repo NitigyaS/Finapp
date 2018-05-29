@@ -1,11 +1,5 @@
 package application;
 
-import Analyser.BackTestAnalyser;
-import Strategies.StrategyBuilder;
-import Strategies.StrategyOne;
-
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
