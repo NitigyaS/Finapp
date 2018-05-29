@@ -5,7 +5,6 @@
  */
 package Analyser;
 
-import Analyser.BackTestAnalyser;
 import Strategies.StrategyBRAD;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BaseTimeSeries;
