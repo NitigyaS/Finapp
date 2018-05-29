@@ -39,7 +39,8 @@ public class Slave implements Callable<Void> {
     }
 
     @Override
-    public Void call() throws Exception {
+    public Void call()
+    {
 
 //Create an Empty Time Series.
         TimeSeries series = new BaseTimeSeries(Master.symbolList[stock_id]);

@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 
 public class FinApp {
-
     private static Logger logger = LoggerFactory.getLogger(FinApp.class);
 
     /**

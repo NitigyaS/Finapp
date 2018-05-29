@@ -32,7 +32,8 @@ public class StockAnalyser {
 
     List<Bar> bar = new ArrayList<Bar>();
 
-    public void backTest() throws InterruptedException {
+    public void backTest()
+    {
 
         bar = CustomTick.historic_data("BIOCON","24month");    // Get Historic Data
 
