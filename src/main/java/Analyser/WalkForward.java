@@ -162,11 +162,11 @@ public class WalkForward {
         Map<String, Integer> bestStrategyCount = new HashMap<String, Integer>();
         Map<String, Double> totalMaxProfit = new HashMap<String, Double>();
 
-        String companyName="tcs";
-        String dateRange="24month";
+        String companyName = "tcs";
+        String dateRange    = "24month";
 
         List<Bar> bar = new ArrayList<Bar>();
-        bar = CustomTick.historic_data(companyName,dateRange);    // Get Historic Data
+        bar = CustomTick.historic_data(companyName, dateRange);    // Get Historic Data
         logger.info("Stock : " + companyName + "Date Range : " + dateRange);
 
         TimeSeries series = new BaseTimeSeries("test_series",bar);
@@ -187,9 +187,9 @@ public class WalkForward {
                 String name = entry.getValue();
                 // For each strategy...
                 TradingRecord tradingRecord = sliceManager.run(strategy);
-                double profit = profitCriterion.calculate(slice, tradingRecord)-1;
+                double profit = profitCriterion.calculate(slice, tradingRecord) - 1;
                 //System.out.println("\tProfit for " + name + ": " + profit);
-                logger.info(slice.getSeriesPeriodDescription()+ "( name=" + name + ", profit=" + profit + ")");
+                logger.info(slice.getSeriesPeriodDescription() + "( name=" + name + ", profit=" + profit + ")");
                 stratagyProfit.put(name,profit);
 
                 if ( totalMaxProfit.containsKey(name) == false ) {
