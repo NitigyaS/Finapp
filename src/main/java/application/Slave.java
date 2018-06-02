@@ -20,6 +20,7 @@ public class Slave implements Runnable {
     private int stockId;
     private String stockName;
     private static final int MAXBARCOUNT = 50;
+    private static final int ITERATORCOUNT = 500;
 
     /**
      * Method initialize the slave with a stock Symbol
@@ -56,7 +57,7 @@ public class Slave implements Runnable {
         // Get the Strategy.
         Strategy strategy = strategyBRAD.buildStrategy();
 
-        for (; i < 500; i++) {
+        for (; i < ITERATORCOUNT; i++) {
 
             // Add next bar in the series.
             Bar newBar = CustomTick.getBar(stockName, i);
