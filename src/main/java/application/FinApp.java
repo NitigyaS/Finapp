@@ -2,7 +2,6 @@ package application;
 
 import custom.ApplicationProperties;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +33,10 @@ public class FinApp {
             logger.info("Initiating Slave Processes");
 
             m.startSlave();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             logger.error(ex.toString());
 
         }
     }
-
 
 }

@@ -140,7 +140,7 @@ public class CustomTick {
 
             return  new BaseBar(time,openPrice, maxPrice, minPrice, closePrice,volume);
 
-        }catch (Exception iox){
+        } catch (Exception iox) {
 
             logger.error(iox.toString());
 

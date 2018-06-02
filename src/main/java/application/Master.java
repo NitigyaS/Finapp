@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * refer: http://www.vogella.com/tutorials/JavaConcurrency/article.html
  * Class Initates multiple Slave Threads to Trade.
  */
-public class Master{
+public class Master {
     // List of Stocks to Analyse
     private static final int NTHREADS = 10;
 
@@ -20,7 +20,7 @@ public class Master{
     /**
      * Methods start the slaves.
      */
-    public void startSlave(){
+    public void startSlave() {
 
         // Maximum thread to run at a time.
         ExecutorService executorPool = Executors.newFixedThreadPool(NTHREADS);

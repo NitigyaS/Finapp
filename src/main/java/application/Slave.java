@@ -14,21 +14,21 @@ import ta.CustomTick;
  * In case any value needs to be returned use Callable and Futures
  * refer http://www.vogella.com/tutorials/JavaConcurrency/article.html
  */
-public class Slave implements Runnable{
+public class Slave implements Runnable {
 
     private static Logger logger = LoggerFactory.getLogger(Slave.class);
-    private int stock_id;
+    private int stockId;
     private String stock_name;
     private static final int maximum_bar_count = 50;
 
     /**
      * Method initialize the slave with a stock Symbol
-     * @param stock_id "Pass the Stock Number to be monitored."
+     * @param stockId "Pass the Stock Number to be monitored."
      */
 
-    public Slave(int stock_id) {
-        this.stock_id = stock_id;
-        this.stock_name = Master.symbolList[stock_id];
+    public Slave(int stockId) {
+        this.stockId = stockId;
+        this.stock_name = Master.symbolList[stockId];
     }
 
     /**
@@ -39,7 +39,7 @@ public class Slave implements Runnable{
     {
 
         //Create an Empty Time Series.
-        TimeSeries series = new BaseTimeSeries(Master.symbolList[stock_id]);
+        TimeSeries series = new BaseTimeSeries(Master.symbolList[stockId]);
         series.setMaximumBarCount(maximum_bar_count);
 
         // Fill the time series with previous Bars.
@@ -52,7 +52,7 @@ public class Slave implements Runnable{
         TradingRecordDao tradingRecordDao = new TradingRecordDao();
 
         // Get the StrategyBuilder
-        StrategyBRAD strategyBRAD = new StrategyBRAD(series,Integer.valueOf(stock_id).toString());
+        StrategyBRAD strategyBRAD = new StrategyBRAD(series,Integer.valueOf(stockId).toString());
 
         // Get the Strategy.
         Strategy strategy = strategyBRAD.buildStrategy();
@@ -69,8 +69,7 @@ public class Slave implements Runnable{
             // Check if strategy should enter this point
             if (strategy.shouldEnter(endIndex)) {
 
-                try
-                {
+                try {
 
                     logger.debug("Strategy.shouldEnter True at " + endIndex);
 
@@ -86,14 +85,13 @@ public class Slave implements Runnable{
                                 + " (price=" + entryOrder.getPrice()
                                 + ", amount=" + entryOrder.getQuantity().doubleValue() + ")");
                     }
-                }catch (NullPointerException ex){
+                } catch (NullPointerException ex) {
                     logger.error(ex.toString());
                 }
 
 
             } else if (strategy.shouldExit(endIndex)) {
-                try
-                {
+                try {
 
                     logger.debug("Strategy.shouldExit True at " + endIndex);
 
@@ -111,7 +109,7 @@ public class Slave implements Runnable{
                                 + ", amount=" + exitOrder.getQuantity().doubleValue() + ")");
 
                     }
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     logger.error(ex.toString());
                 }
             }
