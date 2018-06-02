@@ -18,8 +18,8 @@ public class Slave implements Runnable {
 
     private static Logger logger = LoggerFactory.getLogger(Slave.class);
     private int stockId;
-    private String stock_name;
-    private static final int maximum_bar_count = 50;
+    private String stockName;
+    private static final int maximumBarCount = 50;
 
     /**
      * Method initialize the slave with a stock Symbol
@@ -28,11 +28,11 @@ public class Slave implements Runnable {
 
     public Slave(int stockId) {
         this.stockId = stockId;
-        this.stock_name = Master.symbolList[stockId];
+        this.stockName = Master.symbolList[stockId];
     }
 
     /**
-     * It is the run method of Runnable class
+     * It is the run method of Runnable class.
      */
     @Override
     public void run()
@@ -40,19 +40,19 @@ public class Slave implements Runnable {
 
         //Create an Empty Time Series.
         TimeSeries series = new BaseTimeSeries(Master.symbolList[stockId]);
-        series.setMaximumBarCount(maximum_bar_count);
+        series.setMaximumBarCount(maximumBarCount);
 
         // Fill the time series with previous Bars.
         int i = 1;
-        for ( ; series.getBarCount() < maximum_bar_count; i++){
-            series.addBar(CustomTick.getBar(stock_name,i));
+        for ( ; series.getBarCount() < maximumBarCount; i++){
+            series.addBar(CustomTick.getBar(stockName   ,i));
         }
 
         // Trading Record Dao
         TradingRecordDao tradingRecordDao = new TradingRecordDao();
 
         // Get the StrategyBuilder
-        StrategyBRAD strategyBRAD = new StrategyBRAD(series,Integer.valueOf(stockId).toString());
+        StrategyBRAD strategyBRAD = new StrategyBRAD(series, Integer.valueOf(stockId).toString());
 
         // Get the Strategy.
         Strategy strategy = strategyBRAD.buildStrategy();
@@ -60,7 +60,7 @@ public class Slave implements Runnable {
         for ( ; i < 500; i++){
 
             // Add next bar in the series.
-            Bar newBar = CustomTick.getBar(stock_name,i);
+            Bar newBar = CustomTick.getBar(stockName,i);
             series.addBar(newBar);
 
 
@@ -73,7 +73,7 @@ public class Slave implements Runnable {
 
                     logger.debug("Strategy.shouldEnter True at " + endIndex);
 
-                    data.Order entryOrder = new data.Order(stock_name, newBar.getClosePrice().doubleValue(), 10);
+                    data.Order entryOrder = new data.Order(stockName, newBar.getClosePrice().doubleValue(), 10);
 
                     entryOrder.setTransaction_type("B");
 
@@ -95,7 +95,7 @@ public class Slave implements Runnable {
 
                     logger.debug("Strategy.shouldExit True at " + endIndex);
 
-                    data.Order exitOrder = new data.Order(stock_name, newBar.getClosePrice().doubleValue(), 10);
+                    data.Order exitOrder = new data.Order(stockName, newBar.getClosePrice().doubleValue(), 10);
 
                     exitOrder.setTransaction_type("S");
 
