@@ -1,15 +1,25 @@
 package dao;
 
 import data.Order;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+
+
 
 public class OrderDao {
-    Database database;
+    private Database database;
 
     private static Logger logger = LoggerFactory.getLogger(Order.class);
+
     public OrderDao(){
         database = new Database();
     }
@@ -47,8 +57,8 @@ public class OrderDao {
     }
 
     /**
-     *
-     * @param order_history_id
+     * Receives the order based on Order History ID.
+     * @param order_history_id Order History ID.
      * @return Order
      */
     public Order getOrder(int order_history_id){
@@ -69,10 +79,10 @@ public class OrderDao {
     }
 
     /**
-     *
-     * @param order_history_id
-     * @param updatedOrder
-     * @return
+     * Updates the Order.
+     * @param order_history_id Order History Id.
+     * @param updatedOrder New Order.
+     * @return Status of Update.
      */
     public boolean updateOrder(int order_history_id ,Order updatedOrder){
 //        Database database = new Database();
@@ -98,9 +108,9 @@ public class OrderDao {
     }
 
     /**
-     *
-     * @param order
-     * @return boolean
+     * Insert new Order
+     * @param order New Order
+     * @return boolean Status
      */
     public int insertOrder(Order order) {
 //        Database database = new Database();
@@ -126,9 +136,9 @@ public class OrderDao {
     }
 
     /**
-     *
-     * @param order_history_id
-     * @return boolean
+     * Deletes an older order.
+     * @param order_history_id Order History Id.
+     * @return boolean Status
      */
     public boolean deleteOrder(int order_history_id){
 //        Database database = new Database();
@@ -148,11 +158,11 @@ public class OrderDao {
     }
 
     /**
-     *
-     * @param preparedStatement
-     * @param order
+     * Creates a Prepared Statement Objects for Order.
+     * @param preparedStatement PreparedStatement to be constructed.
+     * @param order Order which is to be converted.
      * @return preparedStatement
-     * @throws SQLException
+     * @throws SQLException Exception
      */
     private PreparedStatement createPreparedStatementforOrder(PreparedStatement preparedStatement , Order order) throws SQLException{
         // It inserts null if value is not set in the object

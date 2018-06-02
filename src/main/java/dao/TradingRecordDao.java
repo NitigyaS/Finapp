@@ -1,15 +1,16 @@
 package dao;
 
-import application.Slave;
-import com.sun.tools.corba.se.idl.constExpr.Or;
 import data.Order;
-import data.Stock;
 import data.TradingRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.crypto.Data;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.Statement;
+
 
 public class TradingRecordDao {
 

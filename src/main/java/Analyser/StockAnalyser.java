@@ -30,8 +30,6 @@ import java.util.List;
 
 public class StockAnalyser {
 
-
-
     public static void main(String args[])
     {
         List<Bar> bar = new ArrayList<Bar>();

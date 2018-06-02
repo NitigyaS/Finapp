@@ -2,7 +2,6 @@ package application;
 
 import custom.ApplicationProperties;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,32 +13,30 @@ import org.slf4j.LoggerFactory;
 
 public class FinApp {
     private static Logger logger = LoggerFactory.getLogger(FinApp.class);
+    private  static  Properties properties = new ApplicationProperties().getPropertyObject("config.properties");
 
     /**
      * Starting Point of the Application
-     * @param args
+     * @param args Arguments to be passed to main method.
      */
     public static void main(String[] args) {
-        //Master m = new Master();
-        //m.startSlave(); 1
-        //CustomTick.historic_data();
-        try{
-            System.out.println("This is the entry point of Application!!");
-            Properties properties = new ApplicationProperties().getPropertyObject("config.properties");
-            System.out.println("Config File Properties : " + properties.getProperty("author") + " , " + properties.getProperty("company"));
-            //OrderDao orderDao = new OrderDao();
-            //orderDao.getOrder(29);
-            Master m = new Master();
-            m.startSlave();
-            //CustomTick.historic_data();
-            //new StockAnalyser().backTest();
 
-            //System.out.println("Exce",e);
-        }catch (Exception e){
-            logger.error(e.toString());
+        try{
+            logger.info("Application Starting");
+
+            logger.info("Author : " + properties.getProperty("author"));
+
+            logger.info("Initiating Master Process");
+
+            Master m = new Master();
+
+            logger.info("Initiating Slave Processes");
+
+            m.startSlave();
+        } catch (Exception ex) {
+            logger.error(ex.toString());
 
         }
     }
-
 
 }
