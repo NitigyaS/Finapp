@@ -35,8 +35,7 @@ public class Slave implements Runnable {
      * It is the run method of Runnable class.
      */
     @Override
-    public void run()
-    {
+    public void run() {
 
         //Create an Empty Time Series.
         TimeSeries series = new BaseTimeSeries(Master.symbolList[stockId]);
@@ -44,8 +43,8 @@ public class Slave implements Runnable {
 
         // Fill the time series with previous Bars.
         int i = 1;
-        for ( ; series.getBarCount() < maximumBarCount; i++){
-            series.addBar(CustomTick.getBar(stockName   ,i));
+        for ( ; series.getBarCount() < maximumBarCount; i++) {
+            series.addBar(CustomTick.getBar(stockName, i));
         }
 
         // Trading Record Dao
@@ -57,10 +56,10 @@ public class Slave implements Runnable {
         // Get the Strategy.
         Strategy strategy = strategyBRAD.buildStrategy();
 
-        for ( ; i < 500; i++){
+        for ( ; i < 500; i++) {
 
             // Add next bar in the series.
-            Bar newBar = CustomTick.getBar(stockName,i);
+            Bar newBar = CustomTick.getBar(stockName, i);
             series.addBar(newBar);
 
 
