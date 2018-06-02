@@ -101,8 +101,7 @@ public class Slave implements Runnable {
 
                     boolean exited = tradingRecordDao.exit(exitOrder);
 
-                    if (exited)
-                    {
+                    if (exited) {
 
                         logger.info("Exited on " + exitOrder.getSymbol()
                                 + " (price=" + exitOrder.getPrice()
