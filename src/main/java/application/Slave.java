@@ -77,10 +77,9 @@ public class Slave implements Runnable {
 
                     entryOrder.setTransaction_type("B");
 
-                    int entered = tradingRecordDao.enter(entryOrder, newBar.getClosePrice().doubleValue() * 0.95);
+                    int entered = tradingRecordDao.enter(entryOrder, 0 );
 
-                    if (entered != 0)
-                    {
+                    if (entered != 0) {
                         logger.info("Entered on " + entryOrder.getSymbol()
                                 + " (price=" + entryOrder.getPrice()
                                 + ", amount=" + entryOrder.getQuantity().doubleValue() + ")");
