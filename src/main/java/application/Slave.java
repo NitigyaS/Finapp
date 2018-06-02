@@ -19,7 +19,7 @@ public class Slave implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(Slave.class);
     private int stockId;
     private String stockName;
-    private static final int maximumBarCount = 50;
+    private static final int MAXBARCOUNT = 50;
 
     /**
      * Method initialize the slave with a stock Symbol
@@ -39,11 +39,11 @@ public class Slave implements Runnable {
 
         //Create an Empty Time Series.
         TimeSeries series = new BaseTimeSeries(Master.symbolList[stockId]);
-        series.setMaximumBarCount(maximumBarCount);
+        series.setMaximumBarCount(MAXBARCOUNT);
 
         // Fill the time series with previous Bars.
         int i = 1;
-        for ( ; series.getBarCount() < maximumBarCount; i++) {
+        for (; series.getBarCount() < MAXBARCOUNT; i++) {
             series.addBar(CustomTick.getBar(stockName, i));
         }
 
@@ -56,7 +56,7 @@ public class Slave implements Runnable {
         // Get the Strategy.
         Strategy strategy = strategyBRAD.buildStrategy();
 
-        for ( ; i < 500; i++) {
+        for (; i < 500; i++) {
 
             // Add next bar in the series.
             Bar newBar = CustomTick.getBar(stockName, i);
