@@ -40,7 +40,7 @@ public class StockAnalyser {
 
         StrategyBRAD strategyBRAD = new StrategyBRAD(ts,"Bollinger and RSI");
         strategyBRAD.setStopLossPercentage(8.0);
-        strategyBRAD.setRsiSlope(1,0.1);//Initialize Strategy
+        strategyBRAD.setRsiSlope(1,10);//Initialize Strategy
 
         BackTestAnalyser strategyAnalyser = new BackTestAnalyser();                 //Initialize Strategy Analyser
 
