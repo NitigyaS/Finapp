@@ -23,15 +23,12 @@ package Analyser;
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Strategies.StrategyBuilder;
-import netscape.javascript.JSObject;
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.criteria.TotalProfitCriterion;
 import Strategies.StrategyBRAD;
-import Strategies.StrategyOne;
 import ta.CustomTick;
 
 /*import ta4jexamples.loaders.CsvTradesLoader;
@@ -154,42 +151,60 @@ public class WalkForward {
     }
 
 
-    public static void main(String[] args) {
-        // Splitting the series into slices
-        // TotalProfit if Strategy is selected.
-        Map<String, Double> totalBestProfit = new HashMap<String, Double>();
-        // Number of Times the Strategy give Maximum Profit.
-        Map<String, Integer> bestStrategyCount = new HashMap<String, Integer>();
-        Map<String, Double> totalMaxProfit = new HashMap<String, Double>();
+    public static void main(String args[]){
 
         String companyName = "tcs";
         String dateRange    = "24month";
 
-        List<Bar> bar = new ArrayList<Bar>();
-        bar = CustomTick.historic_data(companyName, dateRange);    // Get Historic Data
+        List<Bar> bar = CustomTick.historic_data(companyName, dateRange);    // Get Historic Data
         logger.info("Stock : " + companyName + "Date Range : " + dateRange);
 
         TimeSeries series = new BaseTimeSeries("test_series",bar);
         List<TimeSeries> subseries = splitSeries(series, Duration.ofDays(30), Duration.ofDays(90));
 
         // Building the map of strategies
-        Map<Strategy, String> strategies = StrategyBRAD.buildStrategiesMap(series,10 , 1);
+        Map<Strategy, String> strategies = StrategyBRAD.buildStrategiesMapForRSI(series,10 , 1 ,1);
+        List<BestStrategy> bestStrategyList =  analyse(strategies , subseries);
+
+        System.out.println(new Gson().toJson(bestStrategyList));
+
+
+
+
+    }
+
+    public static List<BestStrategy> analyse( Map<Strategy, String> strategies  , List<TimeSeries> subseries ) {
+        // Splitting the series into slices
+        // TotalProfit if Strategy is selected.
+        List<BestStrategy> bestStrategyList = new ArrayList<>();
+        Map<String, Double> totalBestProfit = new HashMap<>();
+        // Number of Times the Strategy give Maximum Profit.
+        Map<String, Integer> bestStrategyCount = new HashMap<>();
+        Map<String, Double> totalMaxProfit = new HashMap<>();
 
         // The analysis criterion
         AnalysisCriterion profitCriterion = new TotalProfitCriterion();
+
         for (TimeSeries slice : subseries) {
-            Map<String, Double> stratagyProfit = new HashMap<String, Double>();
+
+            Map<String, Double> stratagyProfit = new HashMap<>();
+
             // For each sub-series...
-            //System.out.println("Sub-series: " + slice.getSeriesPeriodDescription());
             TimeSeriesManager sliceManager = new TimeSeriesManager(slice);
+
             for (Map.Entry<Strategy, String> entry : strategies.entrySet()) {
+
                 Strategy strategy = entry.getKey();
+
                 String name = entry.getValue();
+
                 // For each strategy...
                 TradingRecord tradingRecord = sliceManager.run(strategy);
+
                 double profit = profitCriterion.calculate(slice, tradingRecord) - 1;
-                //System.out.println("\tProfit for " + name + ": " + profit);
-                logger.info(slice.getSeriesPeriodDescription() + "( name=" + name + ", profit=" + profit + ")");
+
+                //logger.info(slice.getSeriesPeriodDescription() + "( name=" + name + ", profit=" + profit + ")");
+
                 stratagyProfit.put(name,profit);
 
                 if ( totalMaxProfit.containsKey(name) == false ) {
@@ -200,12 +215,16 @@ public class WalkForward {
 
             }
 
-            Strategy bestStrategy = profitCriterion.chooseBest(sliceManager, new ArrayList<Strategy>(strategies.keySet()));
+            Strategy bestStrategy = profitCriterion.chooseBest(sliceManager, new ArrayList<>(strategies.keySet()));
+
             String bestStrategyName=strategies.get(bestStrategy);
-            logger.info("Best strategy: " + bestStrategyName);
+
+            //logger.info("Best strategy: " + bestStrategyName +"\n");
+
             if ( bestStrategyCount.containsKey(bestStrategyName) == false ) {
                 bestStrategyCount.put(bestStrategyName,Integer.valueOf(0));
             }
+
             bestStrategyCount.put(bestStrategyName,bestStrategyCount.get(bestStrategyName)+1);
             if ( totalBestProfit.containsKey(bestStrategyName) == false ) {
                 totalBestProfit.put(bestStrategyName,Double.valueOf(0));
@@ -214,18 +233,74 @@ public class WalkForward {
 
         }
 
+        // Create list of BestStrategy Objects.
         for (String value:totalBestProfit.keySet())
         {
-            System.out.println(value);
-            System.out.println("Total Profit of :" + totalBestProfit.get(value));
-            System.out.println("Count Best Strategy :" + bestStrategyCount.get(value));
-            System.out.println("Total Maximum Profit :" + totalMaxProfit.get(value));
-            System.out.println("Average Best Profit Per Trade :" + totalBestProfit.get(value) / bestStrategyCount.get(value));
-            System.out.println("Average Max Profit Per Trade :" + totalMaxProfit.get(value) / totalMaxProfit.size() +"\n");
-        }
+            logger.info(value);
+            logger.info("bestStrategyCount "+ bestStrategyCount.get(value));
+            logger.info("totalMaxProfit "+totalMaxProfit.get(value) );
+            logger.info("totalBestProfit "+totalBestProfit.get(value) + "\n");
+            BestStrategy bestStrategy = new BestStrategy();
+            bestStrategy.setStrategyName(value);
+            bestStrategy.setStrategyBestCount(bestStrategyCount.get(value));
 
+            bestStrategy.setTotalProfitYield(totalMaxProfit.get(value));
+            bestStrategy.setBestProfitYield(totalBestProfit.get(value));
+            bestStrategyList.add(bestStrategy);
+        }
+        return bestStrategyList;
 
     }
 
 }
+
+class BestStrategy{
+    String strategyName;
+    int strategyBestCount = 0;
+    double totalProfitYield = 0;
+    double bestProfitYield = 0;
+
+    public String getStrategyName()
+    {
+        return strategyName;
+    }
+
+    public void setStrategyName(String strategyName)
+    {
+        this.strategyName = strategyName;
+    }
+
+    public int getStrategyBestCount()
+    {
+        return strategyBestCount;
+    }
+
+    public void setStrategyBestCount(int strategyBestCount)
+    {
+        this.strategyBestCount = strategyBestCount;
+    }
+
+    public double getTotalProfitYield()
+    {
+        return totalProfitYield;
+    }
+
+    public void setTotalProfitYield(double totalProfitYield)
+    {
+        this.totalProfitYield = totalProfitYield;
+    }
+
+
+    public double getBestProfitYield()
+    {
+        return bestProfitYield;
+    }
+
+    public void setBestProfitYield(double bestProfitYield)
+    {
+        this.bestProfitYield = bestProfitYield;
+    }
+}
+
+
 

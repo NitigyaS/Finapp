@@ -11,8 +11,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.MinusDMIndicator;
 import org.ta4j.core.indicators.helpers.PlusDMIndicator;
 import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
-import org.ta4j.core.trading.rules.InSlopeRule;
-import org.ta4j.core.trading.rules.OverIndicatorRule;
+import org.ta4j.core.trading.rules.*;
 import ta.IndicatortoChart;
 
 
@@ -30,18 +29,15 @@ public class StrategyBRAD implements StrategyBuilder
     private RSIIndicator rsi;
     private MinusDMIndicator minusDMI;
     private PlusDMIndicator plusDMI;
+    private String name;
+    private BollingerBandsMiddleIndicator bbm;
+    private BollingerBandsUpperIndicator bbu;
+    private BollingerBandsLowerIndicator bbl;
 
-    private String name = "StrategyBRAD";
-
-    SMAIndicator smaIndicator;
-    BollingerBandsMiddleIndicator bbm;
-    BollingerBandsUpperIndicator bbu;
-    BollingerBandsLowerIndicator bbl;
-
-    private int timeFrame20 = 20;
-    private int timeFrame14 = 14;
+    private static final int timeFrame20 = 20;
+    private static final int timeFrame14 = 14;
     private int volatilityThreshold = 5;
-
+    private double stopLossPercentage = 3;
     private int rsiSlopeLength = 5;
     private double minRSISLope = 0.1; // 6 Degree
 
@@ -60,8 +56,8 @@ public class StrategyBRAD implements StrategyBuilder
         this.plusDMI = new PlusDMIndicator(series);
         this.minusDMI = new MinusDMIndicator(series);
         this.closePrice = new ClosePriceIndicator(series);
-        this.bandWidth = calculateBollingerBandwidth(series);
-        this.rsi = new RSIIndicator(this.closePrice, this.timeFrame14);
+        this.bandWidth = calculateBollingerBandwidth();
+        this.rsi = new RSIIndicator(this.closePrice, timeFrame14);
 
     }
 
@@ -102,6 +98,7 @@ public class StrategyBRAD implements StrategyBuilder
      */
     public void setVolatilityThreshold(int volatilityThreshold)
     {
+
         this.volatilityThreshold = volatilityThreshold;
     }
 
@@ -117,6 +114,10 @@ public class StrategyBRAD implements StrategyBuilder
 
     }
 
+    public void setStopLossPercentage(Double stopLossPercentage){
+        this.stopLossPercentage = stopLossPercentage;
+    }
+
     @Override
     public void displayOnChart()
     {
@@ -129,14 +130,14 @@ public class StrategyBRAD implements StrategyBuilder
         inc.generateCandles(getName(), false);
     }
 
-    private BollingerBandWidthIndicator calculateBollingerBandwidth(TimeSeries series)
+    private BollingerBandWidthIndicator calculateBollingerBandwidth()
     {
 
-        this.smaIndicator = new SMAIndicator(this.closePrice, this.timeFrame20);
+        SMAIndicator smaIndicator = new SMAIndicator(this.closePrice, timeFrame20);
 
-        StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(this.closePrice, this.timeFrame20);
+        StandardDeviationIndicator standardDeviationIndicator = new StandardDeviationIndicator(this.closePrice, timeFrame20);
 
-        this.bbm = new BollingerBandsMiddleIndicator(this.smaIndicator);
+        this.bbm = new BollingerBandsMiddleIndicator(smaIndicator);
 
         this.bbu = new BollingerBandsUpperIndicator(this.bbm, standardDeviationIndicator);
 
@@ -149,7 +150,7 @@ public class StrategyBRAD implements StrategyBuilder
     private Strategy getLongStrategy()
     {
 
-        Rule nonVolatilityRule = new OverIndicatorRule(this.bandWidth, Decimal.valueOf(this.volatilityThreshold));
+        Rule nonVolatility = new OverIndicatorRule(this.bandWidth, Decimal.valueOf(this.volatilityThreshold));
 
         Rule rsiSlopePositive = new InSlopeRule(this.rsi, this.rsiSlopeLength, Decimal.valueOf(this.minRSISLope), Decimal.valueOf(50)); //Tan(n) 0 <-> Infinity
 
@@ -157,32 +158,41 @@ public class StrategyBRAD implements StrategyBuilder
 
         Rule bandwidthSlopeNegative = new InSlopeRule(this.bandWidth, 5, Decimal.valueOf(-50), Decimal.valueOf(-1));
 
-        Rule entrySignal = nonVolatilityRule.and(rsiSlopePositive).and(pDmiGTmDMI);
+        Rule stopLoss = new StopLossRule(closePrice , Decimal.valueOf(stopLossPercentage));
 
-        Rule exitSignal = bandwidthSlopeNegative;
+        Rule entrySignal = nonVolatility.and(rsiSlopePositive).and(pDmiGTmDMI);
 
-        Strategy strategyBRAD = new BaseStrategy(entrySignal, exitSignal);
+        Rule exitSignal = bandwidthSlopeNegative.or(stopLoss);
 
-        return strategyBRAD;
+        return new BaseStrategy(entrySignal, exitSignal);
+
+
     }
 
+
     /**
+     *
      * @param series
      * @param numberOfStrategy
      * @param rsiSlopeVariation
+     * @param stopLossVariation
      * @return
      */
-    public static Map<Strategy, String> buildStrategiesMap(TimeSeries series, int numberOfStrategy, int rsiSlopeVariation)
+    public static Map<Strategy, String> buildStrategiesMapForRSI(TimeSeries series, int numberOfStrategy, int rsiSlopeVariation ,  double stopLossVariation)
     {
         // Create a strategyList
-        ArrayList<StrategyBRAD> strategyList = new ArrayList<StrategyBRAD>();
+        ArrayList<StrategyBRAD> strategyList = new ArrayList<>();
         // Create k Different Strategy
         for (int i = 1; i < numberOfStrategy; i++)
         {
-            StrategyBRAD strategyBRAD = new StrategyBRAD(series, "Strategy-" + i * rsiSlopeVariation); //Initialize strategy with series.
-            strategyBRAD.setRsiSlope(i * rsiSlopeVariation, 0.1);                      //Set Parameter
-            strategyList.add(strategyBRAD);                                                // Add to Strategy List
+            for ( int j = 0; j < numberOfStrategy ; j++){
+                StrategyBRAD strategyBRAD = new StrategyBRAD(series, "StrategyBRAD : RSI=(" + i * rsiSlopeVariation + "), SL=(" +j*stopLossVariation+")"); //Initialize strategy with series.
+                strategyBRAD.setRsiSlope(i * rsiSlopeVariation, 0.1);
+                strategyBRAD.setStopLossPercentage(j*stopLossVariation);//Set Parameter
+                strategyList.add(strategyBRAD);
+            }
         }
+
         HashMap<Strategy, String> strategies = new HashMap<>();         // Create HashMap for WalkForward Class
         for (StrategyBRAD sb : strategyList)
         {
@@ -193,3 +203,5 @@ public class StrategyBRAD implements StrategyBuilder
 
 
 }
+
+

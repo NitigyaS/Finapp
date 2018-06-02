@@ -30,22 +30,23 @@ import java.util.List;
 
 public class StockAnalyser {
 
-    List<Bar> bar = new ArrayList<Bar>();
 
-    public void backTest()
+
+    public static void main(String args[])
     {
+        List<Bar> bar = new ArrayList<Bar>();
 
-        bar = CustomTick.historic_data("BIOCON","24month");    // Get Historic Data
+        bar = CustomTick.historic_data("biocon","12month");    // Get Historic Data
 
         TimeSeries ts = new BaseTimeSeries("test_series",bar);
-        //ts.setMaximumBarCount(100);//Create TimeSeries
 
-//        StrategyOne strategy = new StrategyOne(ts);                              //Initialize Strategy
-        StrategyBRAD strategy = new StrategyBRAD(ts,"Bollinger and RSI");                              //Initialize Strategy
+        StrategyBRAD strategyBRAD = new StrategyBRAD(ts,"Bollinger and RSI");
+        strategyBRAD.setStopLossPercentage(8.0);
+        strategyBRAD.setRsiSlope(1,0.1);//Initialize Strategy
 
         BackTestAnalyser strategyAnalyser = new BackTestAnalyser();                 //Initialize Strategy Analyser
 
-        strategyAnalyser.printAllResults(strategy);                              // Pass the Strategy to Analyse
+        strategyAnalyser.printAllResults(strategyBRAD);                              // Pass the Strategy to Analyse
 
     }
 
