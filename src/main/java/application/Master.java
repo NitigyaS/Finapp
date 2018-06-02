@@ -1,48 +1,43 @@
 package application;
-
-import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by nitigyas on 17/9/17.
- *
+ * refer: http://www.vogella.com/tutorials/JavaConcurrency/article.html
+ * Class Initates multiple Slave Threads to Trade.
  */
-public class Master {
+public class Master{
     // List of Stocks to Analyse
-    private static final int NTHREDS = 10;
+    private static final int NTHREADS = 10;
 
     final  static String[] symbolList = new String[]{"TCS"};
 
-    // Methods start slaves for each stock
+    // Get Stocks to analyse from Database.
+    // Get Which stocks are in volatile phase.
+
+    /**
+     * Methods start the slaves.
+     */
     public void startSlave(){
 
-        List<Future<Void>> list = new ArrayList<>();
-
         // Maximum thread to run at a time.
-        ExecutorService executorPool = Executors.newFixedThreadPool(NTHREDS);
+        ExecutorService executorPool = Executors.newFixedThreadPool(NTHREADS);
 
         // Create Slaves Threads
         for (int id =0; id<symbolList.length ; id++){
-
-            Future<Void> future = executorPool.submit(new Slave(id));
-            list.add(future);
+            executorPool.execute(new Slave(id));
         }
 
         shutdownExecutor(executorPool);
 
-
-        //Monitor Threads? and refork them
-        // Wait for Threads to complete
-
-
     }
 
+    /**
+     * It Stops the Service Gracefully.
+     * @param executorService Service To be stop Gracefully
+     */
     private void shutdownExecutor(ExecutorService executorService){
         executorService.shutdown();
         try {

@@ -1,6 +1,3 @@
-/**
- *
- */
 package dao;
 
 import custom.ApplicationProperties;
@@ -61,10 +58,10 @@ public class Database {
         return connection;
     }
 
-    @Override
     /**
      * Close the connection.
      */
+    @Override
     protected void finalize() throws Throwable {
         if (connection != null && !connection.isClosed()) {
             connection.close();
