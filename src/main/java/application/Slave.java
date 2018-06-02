@@ -20,7 +20,7 @@ public class Slave implements Runnable {
     private int stockId;
     private String stockName;
     private static final int MAXBARCOUNT = 50;
-    private static final int ITERATORCOUNT = 500;
+    private static final int ITERATORCOUNT = 300;
 
     /**
      * Method initialize the slave with a stock Symbol

@@ -27,12 +27,16 @@ public class FinApp {
             logger.info("Author : " + properties.getProperty("author"));
 
             logger.info("Initiating Master Process");
+            // Slope - > Angle
+            System.out.println(Math.toDegrees(Math.atan(50)));
+            double rad = Math.toRadians(40);
+            System.out.println(Math.atan(0.83901));
 
-            Master m = new Master();
+            //Master m = new Master();
 
             logger.info("Initiating Slave Processes");
 
-            m.startSlave();
+            //m.startSlave();
         } catch (Exception ex) {
             logger.error(ex.toString());
 

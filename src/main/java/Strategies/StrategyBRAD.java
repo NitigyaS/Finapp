@@ -1,5 +1,6 @@
 package Strategies;
 
+import custom.Helper;
 import org.ta4j.core.*;
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.SMAIndicator;
@@ -39,7 +40,8 @@ public class StrategyBRAD implements StrategyBuilder
     private int volatilityThreshold = 5;
     private double stopLossPercentage = 3;
     private int rsiSlopeLength = 5;
-    private double minRSISLope = 0.1; // 6 Degree
+    private double minRSISLope = Helper.degreeToSlope(6); // 6 Degree
+    private double maxRSISlope = Helper.degreeToSlope(89); // 6 Degree
 
 
     public StrategyBRAD(TimeSeries series, String name)
@@ -105,12 +107,26 @@ public class StrategyBRAD implements StrategyBuilder
 
     /**
      * @param rsiSlopeLength previous nth value to take slope of.
-     * @param minSlope       minSlope Value. Tan(0) = 0 <-> Tan(90) = Infinity
+     * @param minSlopeDegree       minSlope Value. Tan(0) = 0 <-> Tan(90) = Infinity
      */
-    public void setRsiSlope(int rsiSlopeLength, double minSlope)
+    public void setRsiSlope(int rsiSlopeLength, double minSlopeDegree)
     {
         this.rsiSlopeLength = rsiSlopeLength;
-        this.minRSISLope = minSlope;
+        this.minRSISLope = Helper.degreeToSlope(minSlopeDegree);
+
+    }
+
+    /**
+     *
+     * @param rsiSlopeLength
+     * @param minSlopeDegree
+     * @param maxSlopeDegree
+     */
+    public void setRsiSlope(int rsiSlopeLength, double minSlopeDegree , double maxSlopeDegree)
+    {
+        this.rsiSlopeLength = rsiSlopeLength;
+        this.minRSISLope = Helper.degreeToSlope(minSlopeDegree);
+        this.maxRSISlope = Helper.degreeToSlope(maxSlopeDegree);
 
     }
 
@@ -152,7 +168,7 @@ public class StrategyBRAD implements StrategyBuilder
 
         Rule nonVolatility = new OverIndicatorRule(this.bandWidth, Decimal.valueOf(this.volatilityThreshold));
 
-        Rule rsiSlopePositive = new InSlopeRule(this.rsi, this.rsiSlopeLength, Decimal.valueOf(this.minRSISLope), Decimal.valueOf(50)); //Tan(n) 0 <-> Infinity
+        Rule rsiSlopePositive = new InSlopeRule(this.rsi, this.rsiSlopeLength, Decimal.valueOf(this.minRSISLope), Decimal.valueOf(maxRSISlope)); //Tan(n) 0 <-> Infinity
 
         Rule pDmiGTmDMI = new OverIndicatorRule(this.plusDMI, this.minusDMI);
 
