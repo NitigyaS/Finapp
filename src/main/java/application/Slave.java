@@ -77,7 +77,7 @@ public class Slave implements Runnable {
 
                     entryOrder.setTransaction_type("B");
 
-                    int entered = tradingRecordDao.enter(entryOrder, 0 );
+                    int entered = tradingRecordDao.enter(entryOrder, 0);
 
                     if (entered != 0) {
                         logger.info("Entered on " + entryOrder.getSymbol()
